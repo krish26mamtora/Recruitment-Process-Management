@@ -1,0 +1,171 @@
+initial database schema design 
+
+-- 1. Users & Roles
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100),
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE user_roles (
+    user_id INT,
+    role_id INT,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+-- 2. Jobs & Positions
+CREATE TABLE jobs (
+    job_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    min_experience_years INT,
+    status ENUM('open', 'closed', 'on_hold') DEFAULT 'open',
+    reason_closed TEXT,
+    assigned_recruiter_id INT,
+    created_by INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    closed_at DATETIME,
+    FOREIGN KEY (assigned_recruiter_id) REFERENCES users(user_id),
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
+);
+
+-- 3. Skills & Mapping
+CREATE TABLE skills (
+    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255)
+);
+
+CREATE TABLE job_skills (
+    job_id INT,
+    skill_id INT,
+    required BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (job_id, skill_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+    FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+);
+
+-- 4. Candidates & Profiles
+CREATE TABLE candidates (
+    candidate_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    applied_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('new', 'shortlisted', 'interviewing', 'offered', 'rejected', 'on_hold', 'hired') DEFAULT 'new',
+    source VARCHAR(50),
+    data_bank_flag BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE candidate_profiles (
+    profile_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    cv_file_path VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
+);
+
+CREATE TABLE candidate_skills (
+    candidate_id INT,
+    skill_id INT,
+    years_exp DECIMAL(3,1),
+    PRIMARY KEY (candidate_id, skill_id),
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (skill_id) REFERENCES skills(skill_id)
+);
+
+CREATE TABLE candidate_job_links (
+    candidate_id INT,
+    job_id INT,
+    status ENUM('applied', 'screened', 'shortlisted', 'rejected', 'offered') DEFAULT 'applied',
+    linked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (candidate_id, job_id),
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id)
+);
+
+-- 5. Screening & Interviews
+CREATE TABLE screening_reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    job_id INT,
+    reviewer_id INT,
+    comments TEXT,
+    reviewed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+    FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE interviews (
+    interview_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    job_id INT,
+    scheduled_by INT,
+    scheduled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    interview_type ENUM('technical', 'hr', 'online_test', 'panel') NOT NULL,
+    round_no INT,
+    panel_flag BOOLEAN DEFAULT FALSE,
+    event_type ENUM('individual', 'walk_in', 'campus') DEFAULT 'individual',
+    event_id INT,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+    FOREIGN KEY (scheduled_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE interview_participants (
+    interview_id INT,
+    user_id INT,
+    PRIMARY KEY (interview_id, user_id),
+    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+-- 6. Documents & Offer Letters
+CREATE TABLE candidate_documents (
+    doc_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    file_path VARCHAR(255),
+    type VARCHAR(50),
+    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    verified_by INT,
+    verified_status ENUM('pending','verified','rejected') DEFAULT 'pending',
+    verified_at DATETIME,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (verified_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE offers (
+    offer_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    job_id INT,
+    offer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    joining_date DATETIME,
+    status ENUM('sent','accepted','rejected','joined') DEFAULT 'sent',
+    offer_letter VARCHAR(255),
+    issued_by INT,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+    FOREIGN KEY (issued_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE employees (
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id INT,
+    job_id INT,
+    join_date DATETIME,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id)
+);
