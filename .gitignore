@@ -1,0 +1,33 @@
+# Dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend.pnp.js
+
+# Testing
+/frontend/coverage
+
+# Production build
+/frontend/build
+
+# Misc
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# Logs
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# Editor directories and files
+/frontend/.idea/
+/frontend/.vscode/
+*.sw?
+
+# Optional: MacOS specific
+/frontend/.DS_Store
+
+# Optional: Windows specific
+/frontend/Thumbs.db
