@@ -1,3 +1,7 @@
+# =========================
+# Frontend (React) ignores
+# =========================
+
 # Dependencies
 /frontend/node_modules
 /backend/node_modules
@@ -32,3 +36,56 @@
 
 # Optional: Windows specific
 /frontend/Thumbs.db
+
+
+# =========================
+# Backend (Spring Boot) ignores
+# =========================
+
+# Maven build
+/backend/demo/target/
+/backend/demo/.mvn/wrapper/maven-wrapper.jar
+
+# Runtime folders
+/backend/demo/logs/
+/backend/demo/temp/
+/backend/demo/work/
+/backend/demo/webapps/
+
+# IntelliJ IDEA
+/backend/demo/.idea
+/backend/demo/*.iml
+/backend/demo/*.iws
+/backend/demo/*.ipr
+
+# STS
+/backend/demo/.apt_generated
+/backend/demo/.classpath
+/backend/demo/.factorypath
+/backend/demo/.project
+/backend/demo/.settings
+/backend/demo/.springBeans
+/backend/demo/.sts4-cache
+
+# NetBeans
+/backend/demo/nbproject/private/
+/backend/demo/nbbuild/
+/backend/demo/dist/
+/backend/demo/nbdist/
+/backend/demo/.nb-gradle/
+/backend/demo/build/
+
+# VS Code
+/backend/demo/.vscode/
+
+# OS-specific
+/backend/.DS_Store
+
+
+# =========================
+# Common ignores (root + both sides)
+# =========================
+
+# Env files (root, frontend, backend)
+.env
+*.env

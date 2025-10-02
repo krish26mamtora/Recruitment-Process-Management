@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@affinda/affinda": "^7.6.1",
-    "axios": "^1.11.0",
+    "axios": "^1.12.1",
     "mammoth": "^1.10.0",
     "pdfjs-dist": "^5.4.54",
     "react": "^19.1.1",

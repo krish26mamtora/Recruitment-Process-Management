@@ -40,6 +40,7 @@ const Login = () => {
         <button type="submit" className="login-button">
           Login
         </button>
+        <a href="/register">Register</a>
       </form>
     </div>
   );
