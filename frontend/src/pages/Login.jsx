@@ -22,16 +22,12 @@ const Login = () => {
       const data = await response.json();
       console.log(data);
 
-      // if (data.success) {
-      //   alert(`Welcome, ${data.fullName}`);
-      //   localStorage.setItem("userRoles", JSON.stringify(data.roles));
-      //   window.location.href = "/dashboard";
-      // } else {
-      //   alert(data.message);
-      // }
       if (data.success) {
         alert(`Welcome, ${data.fullName}`);
-        localStorage.setItem("userRoles", JSON.stringify(data.roles));
+        localStorage.setItem("fullName", data.fullName);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("userId", data.userId); // or whatever key backend sends
+        localStorage.setItem("userRoles", JSON.stringify(data.roles)); // localStorage.setItem("userRoles", JSON.stringify(data.roles));
 
         const roles = data.roles;
         if (roles.includes("ROLE_ADMIN") || roles.includes("Admin")) {
@@ -40,8 +36,6 @@ const Login = () => {
           navigate("/hr/dashboard");
         } else if (roles.includes("ROLE_RECRUITER")) {
           navigate("/recruiter/dashboard");
-        } else if (roles.includes("ROLE_CANDIDATE")) {
-          navigate("/candidate/dashboard");
         } else {
           navigate("/dashboard");
         }
