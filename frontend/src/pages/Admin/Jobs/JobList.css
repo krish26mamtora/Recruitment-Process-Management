@@ -1,0 +1,112 @@
+/* JobList.css - simple white + light gray theme, responsive */
+.job-list-page {
+  padding: 20px;
+  background: #fff;
+  min-height: 100vh;
+  color: #222;
+}
+
+.job-list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.job-list-header h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #111;
+}
+
+.job-list-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.job-search {
+  padding: 8px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  min-width: 220px;
+}
+
+.job-list-actions select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fafafa;
+}
+
+.create-btn {
+  background: #f7f7f8;
+  border: 1px solid #e6e6e6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+/* Each job item contains JobCard and actions */
+.job-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #f0f0f0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.job-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.job-item-actions button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.job-item-actions button.danger {
+  background: #fff0f0;
+  border-color: #ffd6d6;
+  color: #8b0000;
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.empty {
+  color: #666;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .job-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .job-grid { grid-template-columns: repeat(1, 1fr); }
+  .job-list-actions { justify-content: stretch; }
+}

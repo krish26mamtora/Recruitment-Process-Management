@@ -19,16 +19,35 @@ public class Skill {
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<JobSkill> jobSkills;
 
-    // Getters and Setters
-    public Integer getSkillId() { return skillId; }
-    public void setSkillId(Integer skillId) { this.skillId = skillId; }
+    public Integer getSkillId() {
+        return skillId;
+    }
 
-    public String getSkillName() { return skillName; }
-    public void setSkillName(String skillName) { this.skillName = skillName; }
+    public void setSkillId(Integer skillId) {
+        this.skillId = skillId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getSkillName() {
+        return skillName;
+    }
 
-    public Set<JobSkill> getJobSkills() { return jobSkills; }
-    public void setJobSkills(Set<JobSkill> jobSkills) { this.jobSkills = jobSkills; }
+    public void setSkillName(String skillName) {
+        this.skillName = skillName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<JobSkill> getJobSkills() {
+        return jobSkills;
+    }
+
+    public void setJobSkills(Set<JobSkill> jobSkills) {
+        this.jobSkills = jobSkills;
+    }
 }

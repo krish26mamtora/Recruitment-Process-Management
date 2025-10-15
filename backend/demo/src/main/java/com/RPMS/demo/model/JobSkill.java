@@ -20,7 +20,6 @@ public class JobSkill implements Serializable {
 
     private Boolean required = true;
 
-    // Getters and Setters
     public Job getJob() {
         return job;
     }

@@ -1,0 +1,59 @@
+/* JobForm.css */
+.job-form-page {
+  padding: 20px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.job-form-card {
+  max-width: 900px;
+  margin: 14px auto;
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.job-form-card h2 { margin-top: 0; color: #111; }
+
+.job-form { display: flex; flex-direction: column; gap: 10px; }
+
+label { font-weight: 600; color: #333; margin-top: 6px; }
+.required { color: #c0392b; margin-left: 4px; font-weight: 700 }
+
+input, textarea, select {
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.two-col { display: flex; gap: 12px; }
+.two-col > div { flex: 1; }
+
+.skills-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.skill-pill {
+  background: #f6f6f6;
+  padding: 6px 8px;
+  border-radius: 999px;
+  display:flex; gap:8px; align-items:center;
+  border: 1px solid #eee;
+}
+.skill-pill button { border: none; background: transparent; cursor: pointer; color: #888; font-size: 14px; }
+
+.add-skill { display:flex; gap:6px; align-items:center; }
+.add-skill input { min-width: 160px; }
+.add-skill button { padding: 8px 10px; border-radius: 8px; border: 1px solid #e6e6e6; background: #fafafa; cursor: pointer; }
+
+.form-actions { display:flex; gap: 10px; margin-top: 12px; }
+.form-actions button { padding: 10px 14px; border-radius: 8px; border: none; cursor:pointer; }
+.form-actions .secondary { background: #fafafa; border: 1px solid #eee; }
+
+.loading { color: #666; margin: 8px 0; }
+
+/* responsive */
+@media (max-width: 720px) {
+  .two-col { flex-direction: column; }
+  .job-form-card { padding: 12px; margin: 8px; }
+}

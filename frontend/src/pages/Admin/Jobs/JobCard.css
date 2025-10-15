@@ -1,0 +1,32 @@
+/* JobCard.css */
+.job-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 160px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  border: 1px solid #f4f4f4;
+}
+
+.job-card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.job-card-title { margin:0; font-size:16px; color:#111; }
+
+.job-badge { text-transform: capitalize; font-weight:700; padding:6px 8px; border-radius:999px; font-size:12px; }
+.job-badge.open { background:#e9f7ef; color:#0b7a3f; border:1px solid #dff2e6; }
+.job-badge.on_hold { background:#fff7e6; color:#b35e00; border:1px solid #ffecd5; }
+.job-badge.closed { background:#fff0f0; color:#7a1c1c; border:1px solid #ffdede; }
+
+.job-card-desc { color:#444; font-size:14px; line-height:1.4; margin:0; min-height:40px; }
+
+.job-card-meta { display:flex; gap:12px; color:#666; font-size:13px; margin-top:auto; }
+
+.job-card-skills { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.skill-pill { background:#fafafa; border:1px solid #eee; padding:6px 8px; border-radius:999px; font-size:12px; color:#333; }
+
+/* responsive */
+@media (max-width: 640px) {
+  .job-card { padding:10px; }
+  .job-card-title { font-size:15px; }
+}
