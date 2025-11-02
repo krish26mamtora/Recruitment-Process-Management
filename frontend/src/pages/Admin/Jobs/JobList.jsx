@@ -18,22 +18,11 @@ const JobList = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      params.append("page", page);
-      params.append("size", PAGE_SIZE);
-      if (q) params.append("q", q);
-      if (statusFilter) params.append("status", statusFilter);
-
-      const res = await fetch(`http://localhost:8081/api/jobs?${params}`);
+      const res = await fetch(`http://localhost:8081/api/jobs`);
       if (!res.ok) throw new Error("Failed to fetch jobs");
 
       const data = await res.json();
-      // NOTE: use data.content for list
-      setJobs(data.content || []);
-      setMeta({
-        totalPages: data.totalPages || 1,
-        totalElements: data.totalElements || 0,
-      });
+      setJobs(data || []);
     } catch (err) {
       console.error(err);
       alert("Error loading jobs");

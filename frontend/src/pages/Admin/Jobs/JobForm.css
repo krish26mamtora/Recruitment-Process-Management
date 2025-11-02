@@ -52,8 +52,60 @@ input, textarea, select {
 
 .loading { color: #666; margin: 8px 0; }
 
-/* responsive */
+.skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+}
+
+.skill-pill {
+  background: #e3f2fd;
+  padding: 6px 10px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.skill-pill button {
+  border: none;
+  background: none;
+  color: #444;
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-skill {
+  position: relative;
+  width: 100%;
+}
+
+.suggestion-box {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 10;
+  list-style: none;
+  margin-top: 2px;
+  padding: 0;
+}
+
+.suggestion-box li {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.suggestion-box li:hover {
+  background: #f0f8ff;
+}
+
 @media (max-width: 720px) {
   .two-col { flex-direction: column; }
   .job-form-card { padding: 12px; margin: 8px; }
 }
+

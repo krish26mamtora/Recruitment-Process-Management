@@ -1,4 +1,3 @@
-// JobForm.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./JobForm.css";
@@ -15,10 +14,15 @@ const empty = {
 };
 
 const JobForm = () => {
-  const { id } = useParams(); // edit id
+  const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState(empty);
   const [loading, setLoading] = useState(false);
+
+  // 🔹 For skill suggestions
+  const [allSkills, setAllSkills] = useState([]);
+  const [skillQuery, setSkillQuery] = useState("");
+  const [filteredSkills, setFilteredSkills] = useState([]);
 
   // Fetch job if editing
   useEffect(() => {
@@ -45,6 +49,27 @@ const JobForm = () => {
     }
   }, [id, navigate]);
 
+  // 🔹 Fetch all skills from backend once
+  useEffect(() => {
+    fetch("http://localhost:8081/api/skills/all")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllSkills(data || []);
+      })
+      .catch((err) => console.error("Failed to fetch skills:", err));
+  }, []);
+
+  // 🔹 Filter skills based on input
+  useEffect(() => {
+    const query = skillQuery.toLowerCase();
+    const filtered = allSkills.filter(
+      (s) =>
+        s.skillName.toLowerCase().includes(query) &&
+        !form.skills.some((fs) => fs.skillId === s.skillId)
+    );
+    setFilteredSkills(filtered);
+  }, [skillQuery, allSkills, form.skills]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
@@ -70,7 +95,6 @@ const JobForm = () => {
     try {
       let res;
       if (id) {
-        // Update existing job
         const response = await fetch(`http://localhost:8081/api/jobs/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -79,7 +103,6 @@ const JobForm = () => {
         if (!response.ok) throw new Error("Failed to update job");
         res = await response.json();
       } else {
-        // Create new job
         const response = await fetch(`http://localhost:8081/api/jobs`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -99,18 +122,21 @@ const JobForm = () => {
     }
   };
 
-  // Temporary skill add (UI only)
-  const [newSkill, setNewSkill] = useState("");
-  const addSkill = () => {
-    if (!newSkill.trim()) return;
+  // 🔹 Add skill from suggestions
+  const addSkill = (skill) => {
     setForm((f) => ({
       ...f,
-      skills: [
-        ...(f.skills || []),
-        { skillId: Date.now(), skillName: newSkill.trim(), required: true },
-      ],
+      skills: [...(f.skills || []), skill],
     }));
-    setNewSkill("");
+    setSkillQuery("");
+  };
+
+  // 🔹 Remove skill
+  const removeSkill = (skillId) => {
+    setForm((f) => ({
+      ...f,
+      skills: f.skills.filter((s) => s.skillId !== skillId),
+    }));
   };
 
   return (
@@ -179,33 +205,34 @@ const JobForm = () => {
             placeholder="Recruiter name (optional)"
           />
 
+          {/* 🔹 Skill Section with Autocomplete */}
           <label>Skills</label>
           <div className="skills-row">
             {(form.skills || []).map((s) => (
               <span key={s.skillId} className="skill-pill">
                 {s.skillName}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      skills: f.skills.filter((x) => x.skillId !== s.skillId),
-                    }))
-                  }
-                >
+                <button type="button" onClick={() => removeSkill(s.skillId)}>
                   &times;
                 </button>
               </span>
             ))}
+
             <div className="add-skill">
               <input
-                value={newSkill}
-                placeholder="Add skill (e.g. React)"
-                onChange={(e) => setNewSkill(e.target.value)}
+                type="text"
+                value={skillQuery}
+                placeholder="Search skills..."
+                onChange={(e) => setSkillQuery(e.target.value)}
               />
-              <button type="button" onClick={addSkill}>
-                Add
-              </button>
+              {skillQuery && filteredSkills.length > 0 && (
+                <ul className="suggestion-box">
+                  {filteredSkills.map((s) => (
+                    <li key={s.skillId} onClick={() => addSkill(s)}>
+                      {s.skillName}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 
