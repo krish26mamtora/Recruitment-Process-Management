@@ -1,0 +1,55 @@
+.job-applications-page {
+  padding: 20px;
+}
+
+.job-applications-page h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.applications-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.applications-table th,
+.applications-table td {
+  border: 1px solid #eee;
+  padding: 12px;
+  text-align: left;
+}
+
+.applications-table th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+}
+
+.applications-table tr:hover {
+  background-color: #fafafa;
+}
+
+.resume-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.resume-link:hover {
+  text-decoration: underline;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+.empty {
+  text-align: center;
+  color: gray;
+  margin-top: 20px;
+}

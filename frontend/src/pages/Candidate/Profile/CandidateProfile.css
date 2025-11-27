@@ -1,0 +1,12 @@
+.candidate-profile-page { max-width: 1000px; margin: 20px auto; padding: 20px; }
+.candidate-profile-page h1 { margin-bottom: 10px; }
+.profile-controls { display: flex; gap: 10px; margin-bottom: 20px; }
+.profile-controls input { flex: 1; padding: 8px; }
+.profile-controls button { padding: 8px 12px; }
+.profile-controls .primary { background: #2563eb; color: #fff; border: none; }
+section { margin: 20px 0; }
+h2 { margin-bottom: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-2 input, .grid-2 textarea, .grid-2 select { padding: 8px; }
+.card { border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; margin-bottom: 12px; background: #fafafa; }
+button.danger { background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; }

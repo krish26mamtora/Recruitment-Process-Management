@@ -1,0 +1,110 @@
+.candidate-job-list-page {
+  padding: 2rem;
+  font-family: "Inter", sans-serif;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+.candidate-job-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.candidate-job-header h1 {
+  font-size: 1.8rem;
+  color: #222;
+}
+
+.candidate-job-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.job-search {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 250px;
+  font-size: 0.95rem;
+}
+
+.candidate-job-actions select {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+.candidate-job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.candidate-job-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.candidate-job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.candidate-job-actions-btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.view-btn,
+.apply-btn,
+.closed-btn {
+  flex: 1;
+  margin: 0 0.25rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.view-btn {
+  background: #e9e9e9;
+  color: #333;
+}
+
+.view-btn:hover {
+  background: #dcdcdc;
+}
+
+.apply-btn {
+  background: #007bff;
+  color: white;
+}
+
+.apply-btn:hover {
+  background: #005fcc;
+}
+
+.closed-btn {
+  background: #ccc;
+  color: #555;
+  cursor: not-allowed;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 2rem;
+}
