@@ -26,7 +26,7 @@ const Navbar = () => {
           <Link to="/">Home</Link>
         </li>
 
-        {userRoles.includes("Admin") || userRoles.includes("ROLE_ADMIN") ? (
+        {userRoles.includes("Admin") ? (
           <>
             <li className="nav-item">
               <Link to="/admin/dashboard">Dashboard</Link>
@@ -40,14 +40,16 @@ const Navbar = () => {
           </>
         ) : null}
 
-        {userRoles.includes("CANDIDATE") ||
-        userRoles.includes("ROLE_CANDIDATE") ? (
+        {userRoles.includes("Candidate") ? (
           <>
             <li className="nav-item">
               <Link to="/candidate/dashboard">Dashboard</Link>
             </li>
             <li className="nav-item">
-              <Link to="/resume">Upload Resume</Link>
+              <Link to="/candidate/jobs">Jobs</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/candidate/profile">Profile</Link>
             </li>
           </>
         ) : null}

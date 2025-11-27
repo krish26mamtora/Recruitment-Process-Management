@@ -1,18 +1,13 @@
-// JobList.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import JobCard from "./JobCard";
 import "./JobList.css";
-
-const PAGE_SIZE = 8;
 
 const JobList = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(0);
-  const [meta, setMeta] = useState({ totalPages: 0, totalElements: 0 });
   const [loading, setLoading] = useState(false);
 
   const load = async () => {
@@ -34,7 +29,7 @@ const JobList = () => {
   useEffect(() => {
     load();
     // eslint-disable-next-line
-  }, [q, page, statusFilter]);
+  }, [q, statusFilter]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete job? This action cannot be undone.")) return;
@@ -63,7 +58,6 @@ const JobList = () => {
             value={q}
             onChange={(e) => {
               setQ(e.target.value);
-              setPage(0);
             }}
           />
           <select
@@ -75,11 +69,20 @@ const JobList = () => {
             <option value="on_hold">On Hold</option>
             <option value="closed">Closed</option>
           </select>
+
           <button
             className="create-btn"
             onClick={() => navigate("/admin/jobs/create")}
           >
             + Create Job
+          </button>
+
+          {/* ✅ NEW BUTTON to view all applications */}
+          <button
+            className="applications-btn"
+            onClick={() => navigate("/admin/job-applications")}
+          >
+            View Applications
           </button>
         </div>
       </div>
@@ -112,24 +115,6 @@ const JobList = () => {
             </div>
           ))
         )}
-      </div>
-
-      <div className="pagination">
-        <button
-          disabled={page <= 0}
-          onClick={() => setPage((p) => Math.max(0, p - 1))}
-        >
-          Previous
-        </button>
-        <span>
-          Page {page + 1} of {Math.max(1, meta.totalPages)}
-        </span>
-        <button
-          disabled={page + 1 >= meta.totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </button>
       </div>
     </div>
   );

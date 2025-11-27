@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import "./Login.css";
 
@@ -23,7 +24,7 @@ const Login = () => {
       console.log(data);
 
       if (data.success) {
-        alert(`Welcome, ${data.fullName}`);
+        toast.success(`Welcome, ${data.fullName}`);
         localStorage.setItem("fullName", data.fullName);
         localStorage.setItem("email", data.email);
         localStorage.setItem("userId", data.userId); // or whatever key backend sends
@@ -32,17 +33,19 @@ const Login = () => {
         const roles = data.roles;
         if (roles.includes("ROLE_ADMIN") || roles.includes("Admin")) {
           navigate("/admin/dashboard");
-        } else if (roles.includes("ROLE_HR")) {
-          navigate("/hr/dashboard");
+        } else if (roles.includes("Candidate")) {
+          navigate("/candidate/dashboard");
         } else if (roles.includes("ROLE_RECRUITER")) {
           navigate("/recruiter/dashboard");
         } else {
           navigate("/dashboard");
         }
+      } else {
+        toast.error(data.message || "Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.error("Error during login:", error);
-      alert("Server error. Please try again.");
+      toast.error("Server error. Please try again.");
     }
   };
 
