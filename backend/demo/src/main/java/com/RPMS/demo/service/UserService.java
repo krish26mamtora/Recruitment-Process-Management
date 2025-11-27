@@ -70,13 +70,13 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
-            return new LoginResponse(false, "User not found", null, null);
+            return new LoginResponse(false, "User not found", null, null, null, null);
         }
 
         User user = userOpt.get();
 
         if (!passwordEncoder.matches(password, user.getPasswordHash())) {
-            return new LoginResponse(false, "Invalid password", null, null);
+            return new LoginResponse(false, "Invalid password", null, null, null, null);
         }
 
         // Convert user roles to string set
@@ -85,7 +85,7 @@ public class UserService {
             roleNames.add(role.getRoleName());
         }
 
-        return new LoginResponse(true, "Login successful", user.getFullName(), roleNames);
+        return new LoginResponse(true, "Login successful", user.getFullName(), roleNames, user.getUserId(), user.getEmail());
     }
 
 }

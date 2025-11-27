@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
@@ -28,9 +29,9 @@ public class User {
     private Status status = Status.active;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIgnoreProperties("users") // ✅ Prevents Role → User → Role recursion
     private Set<Role> roles = new HashSet<>();
 
     public enum Status {

@@ -3,6 +3,7 @@ package com.RPMS.demo.model;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "roles")
@@ -16,6 +17,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnoreProperties("roles") // ✅ Prevents User → Role → User recursion
     private Set<User> users = new HashSet<>();
 
     public Long getRoleId() {

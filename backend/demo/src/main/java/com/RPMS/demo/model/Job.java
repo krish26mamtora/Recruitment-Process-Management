@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "jobs")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Job {
 
     @Id
@@ -32,8 +35,23 @@ public class Job {
     private Integer assignedRecruiterId;
     private Integer createdBy;
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private Set<JobSkill> jobSkills;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @com.fasterxml.jackson.annotation.JsonIgnore // ignore raw collection, rely on computed skills
     private Set<JobSkill> jobSkills;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore // prevent heavy serialization and lazy issues
+    private Set<JobApplication> jobApplications;
+
+    public Set<JobApplication> getJobApplications() {
+        return jobApplications;
+    }
+
+    public void setJobApplications(Set<JobApplication> jobApplications) {
+        this.jobApplications = jobApplications;
+    }
 
     // Getters and Setters
     public Integer getJobId() {
@@ -122,5 +140,23 @@ public class Job {
 
     public void setJobSkills(Set<JobSkill> jobSkills) {
         this.jobSkills = jobSkills;
+    }
+
+    @jakarta.persistence.Transient
+    @com.fasterxml.jackson.annotation.JsonProperty("skills")
+    public java.util.List<java.util.Map<String, Object>> getSkills() {
+        if (jobSkills == null) return new java.util.ArrayList<>();
+        java.util.List<java.util.Map<String, Object>> list = new java.util.ArrayList<>();
+        for (JobSkill js : jobSkills) {
+            Skill s = js.getSkill();
+            if (s != null) {
+                java.util.Map<String, Object> m = new java.util.HashMap<>();
+                m.put("skillId", s.getSkillId());
+                m.put("skillName", s.getSkillName());
+                m.put("required", java.lang.Boolean.TRUE.equals(js.getRequired()));
+                list.add(m);
+            }
+        }
+        return list;
     }
 }

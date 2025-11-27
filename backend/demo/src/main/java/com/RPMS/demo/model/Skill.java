@@ -2,9 +2,12 @@ package com.RPMS.demo.model;
 
 import jakarta.persistence.*;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "skills")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Skill {
 
     @Id
@@ -17,6 +20,7 @@ public class Skill {
     private String description;
 
     @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // avoid infinite recursion
     private Set<JobSkill> jobSkills;
 
     public Integer getSkillId() {
