@@ -1,55 +1,23 @@
-.job-applications-page {
-  padding: 20px;
-}
+.job-applications-page { padding: 24px; background: var(--bg); min-height: 100vh; }
 
 .job-applications-page h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
-.applications-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
+.applications-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
 
 .applications-table th,
-.applications-table td {
-  border: 1px solid #eee;
-  padding: 12px;
-  text-align: left;
-}
+.applications-table td { border: 1px solid var(--border); padding: 12px; text-align: left; }
 
-.applications-table th {
-  background-color: #f8f8f8;
-  font-weight: 600;
-}
+.applications-table th { background-color: #f5f7fb; font-weight: 600; }
 
-.applications-table tr:hover {
-  background-color: #fafafa;
-}
+.applications-table tr:hover { background-color: #fbfdff; }
 
-.resume-link {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
-}
+.resume-link { color: var(--primary); text-decoration: none; font-weight: 600; }
 
-.resume-link:hover {
-  text-decoration: underline;
-}
+.resume-link:hover { text-decoration: underline; color: var(--primary-hover); }
 
-.loading {
-  text-align: center;
-  margin-top: 20px;
-  font-weight: 500;
-}
+.loading { text-align: center; margin-top: 20px; font-weight: 500; }
 
-.empty {
-  text-align: center;
-  color: gray;
-  margin-top: 20px;
-}
+.empty { text-align: center; color: var(--text-secondary); margin-top: 20px; }

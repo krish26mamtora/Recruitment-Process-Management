@@ -30,24 +30,21 @@ export default function ApplyJob({ jobId, candidateId }) {
         }
       );
       setMessage(res.data);
-    } catch (error) {
+    } catch {
       setMessage("Error uploading resume.");
     }
   };
 
   return (
-    <div className="p-4 border rounded w-96 mx-auto mt-10">
-      <h2 className="text-xl font-semibold mb-4">Apply for Job</h2>
-      <form onSubmit={handleUpload}>
-        <input type="file" accept=".pdf" onChange={handleFileChange} />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-3"
-        >
-          Upload Resume & Apply
-        </button>
-      </form>
-      {message && <p className="mt-3 text-green-600">{message}</p>}
+    <div className="container">
+      <div className="card" style={{ maxWidth: 600, margin: "0 auto" }}>
+        <h2>Apply for Job</h2>
+        <form onSubmit={handleUpload}>
+          <input type="file" accept=".pdf" onChange={handleFileChange} />
+          <button type="submit" style={{ marginTop: 12 }}>Upload Resume & Apply</button>
+        </form>
+        {message && <p className="muted" style={{ marginTop: 10 }}>{message}</p>}
+      </div>
     </div>
   );
 }

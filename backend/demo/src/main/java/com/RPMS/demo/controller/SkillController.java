@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/skills")
-@CrossOrigin(origins = "http://localhost:5173") // Allow frontend access (React, etc.)
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174" }) // Allow frontend access (React, etc.)
 public class SkillController {
 
     @Autowired

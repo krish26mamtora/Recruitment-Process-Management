@@ -18,17 +18,24 @@ public class JobApplication {
     // --- Relationships ---
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
-    // @JsonIgnoreProperties({ "jobApplications", "jobSkills" }) // ✅ ignore reverse
-    // mapping
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+    @JsonIgnore
     private Job job;
+
+    @Column(name = "job_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Integer jobIdFk;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id", nullable = false)
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "roles" })
-    // @JsonIgnoreProperties({ "applications" }) // ✅ ignore user reverse mapping if
-    // exists
+    @JsonIgnore
     private User candidate;
+
+    @Column(name = "candidate_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Long candidateIdFk;
+
     // --- Candidate Info ---
     @Column(name = "full_name", nullable = false)
     private String fullName;
@@ -70,6 +77,7 @@ public class JobApplication {
 
     // --- Resume Fields ---
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @JsonIgnore
     @Column(name = "resume_data", nullable = false)
     private byte[] resumeData;
@@ -90,6 +98,19 @@ public class JobApplication {
     @Column(name = "remarks")
     private String remarks;
 
+    // --- Lifecycle callbacks to populate foreign keys ---
+    @PostLoad
+    @PrePersist
+    @PreUpdate
+    public void populateForeignKeys() {
+        if (job != null) {
+            this.jobIdFk = job.getJobId();
+        }
+        if (candidate != null) {
+            this.candidateIdFk = candidate.getUserId();
+        }
+    }
+
     // --- Getters & Setters ---
     public Integer getId() {
         return id;
@@ -107,12 +128,20 @@ public class JobApplication {
         this.job = job;
     }
 
+    public Integer getJobIdFk() {
+        return jobIdFk;
+    }
+
     public User getCandidate() {
         return candidate;
     }
 
     public void setCandidate(User candidate) {
         this.candidate = candidate;
+    }
+
+    public Long getCandidateIdFk() {
+        return candidateIdFk;
     }
 
     public byte[] getResumeData() {

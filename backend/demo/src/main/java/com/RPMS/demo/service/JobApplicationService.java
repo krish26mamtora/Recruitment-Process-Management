@@ -1,13 +1,14 @@
 package com.RPMS.demo.service;
 
-import com.RPMS.demo.model.Job;
 import com.RPMS.demo.model.JobApplication;
-import com.RPMS.demo.model.User;
 import com.RPMS.demo.repository.JobApplicationRepository;
 import com.RPMS.demo.repository.JobRepository;
 import com.RPMS.demo.repository.UserRepository;
+import com.RPMS.demo.model.Job;
+import com.RPMS.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -61,13 +62,26 @@ public class JobApplicationService {
     }
 
     // ✅ Fetch All Job Applications
+    @Transactional(readOnly = true)
     public List<JobApplication> getAllApplications() {
         return jobApplicationRepository.findAll();
     }
 
+    // ✅ Fetch job applications by Job ID
+    @Transactional(readOnly = true)
+    public List<JobApplication> getApplicationsByJobId(Integer jobId) {
+        return jobApplicationRepository.findByJobIdFk(jobId);
+    }
+
+    // ✅ Fetch applications by Candidate ID
+    @Transactional(readOnly = true)
+    public List<JobApplication> getApplicationsByCandidateId(Long candidateId) {
+        return jobApplicationRepository.findByCandidate_UserId(candidateId);
+    }
+
     // ✅ Fetch by ID (use Integer type)
     public JobApplication getApplicationById(Long id) {
-        return jobApplicationRepository.findById(id)
+        return jobApplicationRepository.findById(id.intValue())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
     }
 }

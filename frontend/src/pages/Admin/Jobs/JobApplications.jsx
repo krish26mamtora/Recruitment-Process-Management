@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./JobApplications.css";
 
-const JobApplications = () => {
+const JobApplications = ({ jobId }) => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const loadApplications = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8081/api/job-applications");
+      const url = jobId
+        ? `http://localhost:8081/api/job-applications/job/${jobId}`
+        : `http://localhost:8081/api/job-applications`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch job applications");
       const data = await res.json();
       setApplications(data || []);
@@ -22,16 +25,23 @@ const JobApplications = () => {
 
   useEffect(() => {
     loadApplications();
-  }, []);
+    // eslint-disable-next-line
+  }, [jobId]);
 
   return (
     <div className="job-applications-page">
-      <h1>Candidate Job Applications</h1>
+      <h1>
+        {jobId ? `Applications for Job #${jobId}` : "Candidate Job Applications"}
+      </h1>
 
       {loading && <div className="loading">Loading...</div>}
 
       {!loading && applications.length === 0 ? (
-        <div className="empty">No applications found</div>
+        <div className="empty">
+          {jobId
+            ? "No applications for this job yet"
+            : "No applications found"}
+        </div>
       ) : (
         <table className="applications-table">
           <thead>
@@ -55,7 +65,7 @@ const JobApplications = () => {
                 <td>{index + 1}</td>
                 <td>{app.fullName || "—"}</td>
                 <td>{app.email || "—"}</td>
-                <td>{app.job?.title || "—"}</td>
+                <td>{app.jobTitle || (app.jobId ? `Job #${app.jobId}` : "—")}</td>
                 <td>{app.gender || "—"}</td>
                 <td>{app.collegeName || "—"}</td>
                 <td>{app.degree || "—"}</td>

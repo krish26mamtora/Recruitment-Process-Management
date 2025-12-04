@@ -9,6 +9,7 @@ const JobList = () => {
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [appCounts, setAppCounts] = useState({});
 
   const load = async () => {
     setLoading(true);
@@ -18,6 +19,21 @@ const JobList = () => {
 
       const data = await res.json();
       setJobs(data || []);
+
+      // Also load job applications to compute counts per job
+      const appsRes = await fetch(`http://localhost:8081/api/job-applications`);
+      if (appsRes.ok) {
+        const apps = await appsRes.json();
+        const counts = {};
+        (apps || []).forEach((app) => {
+          const jid = app?.job?.jobId;
+          if (!jid) return;
+          counts[jid] = (counts[jid] || 0) + 1;
+        });
+        setAppCounts(counts);
+      } else {
+        console.warn("Failed to fetch job applications for counts");
+      }
     } catch (err) {
       console.error(err);
       alert("Error loading jobs");
@@ -76,14 +92,6 @@ const JobList = () => {
           >
             + Create Job
           </button>
-
-          {/* ✅ NEW BUTTON to view all applications */}
-          <button
-            className="applications-btn"
-            onClick={() => navigate("/admin/job-applications")}
-          >
-            View Applications
-          </button>
         </div>
       </div>
 
@@ -95,7 +103,8 @@ const JobList = () => {
         ) : (
           jobs.map((job) => (
             <div key={job.jobId} className="job-grid-item">
-              <JobCard job={job} />
+              {/* Pass application count to the card */}
+              <JobCard job={job} applicationCount={appCounts[job.jobId] || 0} />
               <div className="job-item-actions">
                 <button onClick={() => navigate(`/admin/jobs/${job.jobId}`)}>
                   View
@@ -110,6 +119,13 @@ const JobList = () => {
                   onClick={() => handleDelete(job.jobId)}
                 >
                   Delete
+                </button>
+                {/* New per-job applications button */}
+                <button
+                  className="applications-btn"
+                  onClick={() => navigate(`/admin/jobs/${job.jobId}/applications`)}
+                >
+                  Applications
                 </button>
               </div>
             </div>

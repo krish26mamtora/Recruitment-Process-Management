@@ -1,19 +1,7 @@
 /* JobDetails.css */
-.job-details-page {
-  padding: 20px;
-  min-height: 100vh;
-  background: #fff;
-}
+.job-details-page { padding: 24px; min-height: 100vh; background: var(--bg); }
 
-.job-details-card {
-  max-width: 980px;
-  margin: 12px auto;
-  border-radius: 10px;
-  padding: 18px;
-  border: 1px solid #f1f1f1;
-  background: #fff;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.03);
-}
+.job-details-card { max-width: 980px; margin: 12px auto; border-radius: var(--radius); padding: 18px; border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow-sm); }
 
 .job-header {
   display:flex;
@@ -22,38 +10,34 @@
   gap: 12px;
 }
 
-.job-header h1 { margin: 0; font-size: 20px; }
-.meta { color: #666; margin-top: 6px; display:flex; gap: 10px; align-items:center; }
+.job-header h1 { margin: 0; font-size: 22px; }
+.meta { color: var(--text-secondary); margin-top: 6px; display:flex; gap: 10px; align-items:center; }
 
-.header-actions button { margin-left: 8px; padding: 8px 10px; border-radius: 8px; border: 1px solid #eee; background: #fafafa; cursor: pointer; }
+.header-actions button { margin-left: 8px; padding: 8px 10px; border-radius: var(--radius-sm); border: none; background: var(--primary); color: #fff; cursor: pointer; }
+.header-actions button:hover { background: var(--primary-hover); }
 
-.badge {
-  padding: 6px 8px;
-  border-radius: 999px;
-  text-transform: capitalize;
-  font-weight: 700;
-}
+.badge { padding: 6px 10px; border-radius: 999px; text-transform: capitalize; font-weight: 700; }
 .badge.open { background: #e9f7ef; color: #0b7a3f; border: 1px solid #dff2e6; }
 .badge.on_hold { background: #fff7e6; color: #b35e00; border: 1px solid #ffecd5; }
 .badge.closed { background: #fff0f0; color: #7a1c1c; border:1px solid #ffdede; }
 
-.job-section { margin-top: 16px; border-top: 1px solid #f2f2f2; padding-top: 12px; }
-.job-section h3 { margin: 0 0 8px 0; color:#222; }
+.job-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+.job-section h3 { margin: 0 0 8px 0; }
 
-.desc { color: #444; line-height: 1.5; }
+.desc { color: var(--text-secondary); line-height: 1.5; }
 
 .details-grid { display:flex; gap:20px; flex-wrap:wrap; }
-.details-grid > div { min-width: 160px; color: #333; }
+.details-grid > div { min-width: 160px; }
 
 .skills-list { display:flex; gap:8px; flex-wrap:wrap; }
-.skill-pill { background: #fafafa; border: 1px solid #eee; padding: 6px 10px; border-radius: 999px; color: #333; }
+.skill-pill { background: #f5f7fb; border: 1px solid var(--border); padding: 6px 10px; border-radius: 999px; }
 
-.muted { color: #888; }
+.muted { color: var(--text-secondary); }
 
-.close-box textarea { width:100%; min-height:80px; padding: 8px; border-radius:8px; border:1px solid #eee; margin-top:8px; background:#fff; }
+.close-box textarea { width:100%; min-height:80px; padding: 10px 12px; border-radius: var(--radius-sm); border:1px solid var(--border); margin-top:8px; background:#fff; }
 
 .actions-row { margin-top:8px; display:flex; gap:8px; }
-button.danger { background: #fff0f0; border-color: #ffd6d6; color:#8b0000; padding:8px 12px; border-radius:8px; cursor:pointer; }
+button.danger { background: #ef4444; color:#fff; padding:8px 12px; border-radius: var(--radius-sm); cursor:pointer; border: none; }
 
 /* responsive */
 @media (max-width:720px) {

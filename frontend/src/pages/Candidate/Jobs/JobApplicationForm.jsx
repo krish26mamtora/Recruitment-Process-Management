@@ -39,11 +39,15 @@ const JobApplicationForm = () => {
           try {
             const ed = p.educationJson ? JSON.parse(p.educationJson) : [];
             firstEdu = ed && ed.length ? ed[0] : {};
-          } catch {}
+          } catch {
+            firstEdu = {};
+          }
           try {
             const ex = p.experiencesJson ? JSON.parse(p.experiencesJson) : [];
             firstExp = ex && ex.length ? ex[0] : {};
-          } catch {}
+          } catch {
+            firstExp = {};
+          }
 
           setFormData((prev) => ({
             ...prev,
@@ -57,8 +61,7 @@ const JobApplicationForm = () => {
             // Simple experience summary from first item if available
             experience:
               firstExp && (firstExp.jobTitle || firstExp.companyName)
-                ? `${firstExp.jobTitle || ""}${
-                    firstExp.jobTitle && firstExp.companyName ? " @ " : ""
+                ? `${firstExp.jobTitle || ""}${firstExp.jobTitle && firstExp.companyName ? " @ " : ""
                   }${firstExp.companyName || ""}`.trim()
                 : prev.experience,
           }));

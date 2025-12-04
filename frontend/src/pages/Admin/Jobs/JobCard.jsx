@@ -2,7 +2,7 @@
 import React from "react";
 import "./JobCard.css";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, applicationCount = 0 }) => {
   return (
     <div className="job-card">
       <div className="job-card-top">
@@ -20,6 +20,9 @@ const JobCard = ({ job }) => {
       <div className="job-card-meta">
         <div>{job.minExperienceYears ?? "-"} yrs</div>
         <div>{job.assignedRecruiterName || "No recruiter"}</div>
+        <div className="app-count-pill" title="Total applications">
+          {applicationCount} applications
+        </div>
       </div>
 
       <div className="job-card-skills">
