@@ -1,0 +1,5 @@
+:root {}
+
+.home-page { padding: 48px 0; }
+.home-hero { max-width: 1000px; margin: 0 auto; padding: 24px; text-align: center; }
+.home-cta { margin-top: 20px; display: inline-flex; gap: 12px; }

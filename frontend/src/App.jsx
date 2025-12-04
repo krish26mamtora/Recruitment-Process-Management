@@ -11,9 +11,17 @@ import JobDetails from "./pages/Admin/Jobs/JobDetails";
 import JobForm from "./pages/Admin/Jobs/JobForm";
 import CandidateDashboard from "./pages/Candidate/CandidateDashboard";
 import CandidateJobList from "./pages/Candidate/Jobs/CandidateJobList";
+import CandidateApplications from "./pages/Candidate/Jobs/CandidateApplications";
 import CandidateProfile from "./pages/Candidate/Profile/CandidateProfile";
 import JobApplicationForm from "./pages/Candidate/Jobs/JobApplicationForm";
-import Jobapplications from "./pages/Admin/Jobs/Jobapplications";
+import JobApplications from "./pages/Admin/Jobs/JobApplications";
+import AdminUsers from "./pages/Admin/Users/AdminUsers";
+import { useParams } from "react-router-dom";
+
+const JobApplicationsForJobRoute = () => {
+  const { jobId } = useParams();
+  return <JobApplications jobId={jobId} />;
+};
 
 const App = () => {
   return (
@@ -31,12 +39,16 @@ const App = () => {
         <Route path="/admin/jobs/:id" element={<JobDetails />} />
         <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
         <Route path="/candidate/jobs" element={<CandidateJobList />} />
+        <Route path="/candidate/applications" element={<CandidateApplications />} />
         <Route path="/candidate/profile" element={<CandidateProfile />} />
         <Route
           path="/candidate/jobs/apply/:jobId"
           element={<JobApplicationForm />}
         />
-        <Route path="/admin/job-applications" element={<Jobapplications />} />
+        <Route path="/admin/job-applications" element={<JobApplications />} />
+        <Route path="/admin/jobs/:jobId/applications" element={<JobApplicationsForJobRoute />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/users/:userId/profile" element={<CandidateProfile />} />
       </Routes>
     </Router>
   );
