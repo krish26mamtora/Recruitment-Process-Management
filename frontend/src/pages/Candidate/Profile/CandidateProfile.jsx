@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./CandidateProfile.css";
+import { useParams } from "react-router-dom";
 
 const emptyExperience = { companyName: "", jobTitle: "", startDate: "", endDate: "", responsibilities: "", achievements: "", technologies: "" };
 const emptyEducation = { degree: "", specialization: "", college: "", passingYear: "" };
@@ -7,7 +8,7 @@ const emptyCertification = { name: "", organization: "", validity: "", certifica
 const emptyProject = { title: "", description: "", techStack: "", role: "", link: "" };
 
 const CandidateProfile = () => {
-  const [userId, setUserId] = useState("");
+  const { userId: routeUserId } = useParams();
 
   // Personal
   const [fullName, setFullName] = useState("");
@@ -56,7 +57,7 @@ const CandidateProfile = () => {
   const loadProfile = async (uidParam) => {
     const uidStr = uidParam != null ? String(uidParam) : String(window.localStorage.getItem("userId") || "");
     const uid = Number(uidStr.trim());
-    if (!Number.isFinite(uid) || uid <= 0) { console.warn("No valid userId found in localStorage"); return; }
+    if (!Number.isFinite(uid) || uid <= 0) { console.warn("No valid userId found in localStorage or route"); return; }
     try {
       const res = await fetch(`http://localhost:8081/api/user-profiles/${uid}`);
       if (res.status === 404) { console.info("No profile found for this user. Form will be empty."); return; }
@@ -139,19 +140,27 @@ const CandidateProfile = () => {
 
   useEffect(() => {
     const storedUserId = window.localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserId(storedUserId);
-      loadProfile(storedUserId);
+    const paramUserId = routeUserId ? String(routeUserId) : null;
+    const effectiveUserId = paramUserId || storedUserId;
+    if (effectiveUserId) {
+      loadProfile(effectiveUserId);
     } else {
-      console.warn("No userId in localStorage. Please login.");
+      console.warn("No userId in localStorage or route. Please login.");
     }
-  }, []);
+  }, [routeUserId]);
+
+  const isSelf = (() => {
+    const storedUserId = String(window.localStorage.getItem("userId") || "").trim();
+    const paramUserId = routeUserId ? String(routeUserId).trim() : null;
+    if (!paramUserId) return true; // candidate viewing their own via /candidate/profile
+    return storedUserId !== "" && storedUserId === paramUserId;
+  })();
 
   return (
     <div className="candidate-profile-page">
-      <h1>Candidate Profile</h1>
+      <h1>Candidate Profile {routeUserId ? `(User ID: ${routeUserId})` : ""}</h1>
       <div className="profile-controls">
-        <button className="primary" onClick={saveProfile}>Save Profile</button>
+        {isSelf && (<button className="primary" onClick={saveProfile}>Save Profile</button>)}
       </div>
 
       <section>
