@@ -60,6 +60,36 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // Bulk create candidates from parsed Excel (frontend sends JSON array)
+    @PostMapping("/bulk-create")
+    public ResponseEntity<BulkCreateResponse> bulkCreate(@RequestBody List<BulkCreateItem> items) {
+        int created = 0;
+        int skipped = 0;
+        for (BulkCreateItem it : items) {
+            try {
+                String username = (it.getUsername() != null && !it.getUsername().isBlank()) ? it.getUsername() : it.getEmail();
+                String fullName = it.getFullName();
+                String email = it.getEmail();
+                String password = (it.getPassword() != null && !it.getPassword().isBlank()) ? it.getPassword() : it.getEmail();
+                if (email == null || email.isBlank()) {
+                    skipped++;
+                    continue;
+                }
+                User user = userService.registerUser(username, fullName, email, password);
+                // Ensure roles include ROLE_USER and Candidate by default
+                Set<String> roles = it.getRoles() != null ? it.getRoles() : Set.of("ROLE_USER", "Candidate");
+                userService.setUserRoles(user.getUserId(), roles);
+                created++;
+            } catch (RuntimeException ex) {
+                skipped++;
+            }
+        }
+        BulkCreateResponse resp = new BulkCreateResponse();
+        resp.setCreatedCount(created);
+        resp.setSkippedCount(skipped);
+        return ResponseEntity.ok(resp);
+    }
+
     // Fallback DTOs (kept local to avoid missing import issues)
     public static class RoleUpdateRequest {
         private Long userId;
@@ -83,5 +113,33 @@ public class UserController {
         public void setEmail(String email) { this.email = email; }
         public Set<String> getRoles() { return roles; }
         public void setRoles(Set<String> roles) { this.roles = roles; }
+    }
+
+    // DTOs for bulk create
+    public static class BulkCreateItem {
+        private String username;
+        private String fullName;
+        private String email;
+        private String password;
+        private Set<String> roles;
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getFullName() { return fullName; }
+        public void setFullName(String fullName) { this.fullName = fullName; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+        public Set<String> getRoles() { return roles; }
+        public void setRoles(Set<String> roles) { this.roles = roles; }
+    }
+
+    public static class BulkCreateResponse {
+        private int createdCount;
+        private int skippedCount;
+        public int getCreatedCount() { return createdCount; }
+        public void setCreatedCount(int createdCount) { this.createdCount = createdCount; }
+        public int getSkippedCount() { return skippedCount; }
+        public void setSkippedCount(int skippedCount) { this.skippedCount = skippedCount; }
     }
 }

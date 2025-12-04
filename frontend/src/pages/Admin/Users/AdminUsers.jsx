@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./AdminUsers.css";
@@ -23,6 +24,8 @@ const AdminUsers = () => {
 
   // Editing roles per user
   const [editedRoles, setEditedRoles] = useState({}); // { [userId]: [roles] }
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -123,6 +126,89 @@ const AdminUsers = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleBulkUpload = async () => {
+    if (!selectedFile) {
+      toast.warn("Please select a file to upload.");
+      return;
+    }
+
+    setUploading(true);
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+
+        const usersToCreate = json.map((row) => ({
+          username: row.Email,
+          fullName: row.Name,
+          email: row.Email,
+          collage: row.Collage,
+          gender: row.Gender,
+          roles: ["Candidate"],
+        }));
+
+        const failedEntries = [];
+        let successfulCount = 0;
+
+        for (const user of usersToCreate) {
+          try {
+            const res = await fetch("http://localhost:8081/api/users/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(user),
+            });
+
+            if (res.ok) {
+              successfulCount++;
+            } else {
+              const errorMsg = await res.text().catch(() => "Unknown error");
+              failedEntries.push({ email: user.email, reason: errorMsg });
+            }
+          } catch (error) {
+            failedEntries.push({ email: user.email, reason: error.message });
+          }
+        }
+
+        if (successfulCount > 0) {
+          toast.success(`${successfulCount} users created successfully.`);
+          fetchUsers(); // Refresh the user list
+        }
+
+        if (failedEntries.length > 0) {
+          const errorDetails = failedEntries.map(f => `${f.email}`).join(', ');
+          toast.error(`Failed to create ${failedEntries.length} users: ${errorDetails}.`);
+        }
+
+      } catch (err) {
+        console.error("Error processing file:", err);
+        toast.error(err.message || "An error occurred while processing the file.");
+      } finally {
+        setUploading(false);
+        setSelectedFile(null);
+        if (document.getElementById('bulk-upload-input')) {
+          document.getElementById('bulk-upload-input').value = '';
+        }
+      }
+    };
+
+    reader.onerror = () => {
+      toast.error("Failed to read the file.");
+      setUploading(false);
+    };
+
+    reader.readAsArrayBuffer(selectedFile);
+  };
+
+
   const initEditedRolesIfNeeded = (u) => {
     if (editedRoles[u.userId] === undefined) {
       setEditedRoles((prev) => ({ ...prev, [u.userId]: roleNamesOf(u) }));
@@ -152,6 +238,26 @@ const AdminUsers = () => {
   return (
     <div className="admin-users-page">
       <h1>Manage Users</h1>
+
+      <section className="create-user-section">
+        <h2>Bulk Upload Candidates</h2>
+        <p className="note">Upload an Excel file with columns: Name, Email, Collage, Gender. Initial password will be set to the email.</p>
+        <div className="role-checkboxes">
+          <input
+            id="bulk-upload-input"
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleFileChange}
+          />
+          <button
+            className="primary"
+            onClick={handleBulkUpload}
+            disabled={uploading}
+          >
+            {uploading ? "Uploading..." : "Upload & Create Accounts"}
+          </button>
+        </div>
+      </section>
 
       <section className="create-user-section">
         <h2>Create New User</h2>
