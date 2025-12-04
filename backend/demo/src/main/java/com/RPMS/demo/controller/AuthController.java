@@ -5,9 +5,9 @@ import com.RPMS.demo.dto.LoginResponse;
 import com.RPMS.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173") // Allow React frontend
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"}) // Allow React frontend
 public class AuthController {
 
     private final UserService userService;

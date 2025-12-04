@@ -1,28 +1,44 @@
 
 .navbar {
-  background-color: #f4f4f4;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ccc;
-    font-family: Arial, sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--surface);
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-list {
   list-style: none;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;  /* horizontal */
-  align-items: center;  /* vertical */
-  gap: 20px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
   margin: 0;
   padding: 0;
 }
 
 .nav-item a {
   text-decoration: none;
-  color: #333;
-  font-weight: 500;
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
 }
 
 .nav-item a:hover {
-  color: #007bff; 
+  color: var(--primary);
+  background: var(--blue-50);
 }
+
+.logout-button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.logout-button:hover { background: var(--primary-hover); }

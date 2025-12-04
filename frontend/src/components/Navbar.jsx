@@ -51,6 +51,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link to="/candidate/profile">Profile</Link>
             </li>
+            <li className="nav-item">
+              <Link to="/candidate/applications">Applications</Link>
+            </li>
           </>
         ) : null}
 

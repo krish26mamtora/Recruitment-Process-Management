@@ -88,4 +88,27 @@ public class UserService {
         return new LoginResponse(true, "Login successful", user.getFullName(), roleNames, user.getUserId(), user.getEmail());
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+
+    public User setUserRoles(Long userId, Set<String> roleNames) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        Set<Role> roles = new HashSet<>();
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByRoleName(roleName)
+                    .orElseGet(() -> {
+                        Role newRole = new Role();
+                        newRole.setRoleName(roleName);
+                        return roleRepository.save(newRole);
+                    });
+            roles.add(role);
+        }
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
+
 }
