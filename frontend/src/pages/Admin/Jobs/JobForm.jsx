@@ -51,12 +51,13 @@ const JobForm = () => {
 
   // 🔹 Fetch all skills from backend once
   useEffect(() => {
-    fetch("http://localhost:8081/api/skills/all")
-      .then((res) => res.json())
-      .then((data) => {
-        setAllSkills(data || []);
-      })
-      .catch((err) => console.error("Failed to fetch skills:", err));
+    fetch("http://localhost:8081/api/skills")
+      .then(res => res.ok ? res.json() : [])
+      .then(setAllSkills)
+      .catch(err => {
+        console.error("Failed to fetch skills:", err);
+        setAllSkills([]); // Ensure it's always an array
+      });
   }, []);
 
   // 🔹 Filter skills based on input
@@ -64,8 +65,8 @@ const JobForm = () => {
     const query = skillQuery.toLowerCase();
     const filtered = allSkills.filter(
       (s) =>
-        s.skillName.toLowerCase().includes(query) &&
-        !form.skills.some((fs) => fs.skillId === s.skillId)
+        s.skill_name.toLowerCase().includes(query) &&
+        !form.skills.some((fs) => fs.skill_id === s.skill_id)
     );
     setFilteredSkills(filtered);
   }, [skillQuery, allSkills, form.skills]);
@@ -135,7 +136,7 @@ const JobForm = () => {
   const removeSkill = (skillId) => {
     setForm((f) => ({
       ...f,
-      skills: f.skills.filter((s) => s.skillId !== skillId),
+      skills: f.skills.filter((s) => s.skill_id !== skillId),
     }));
   };
 
@@ -209,9 +210,9 @@ const JobForm = () => {
           <label>Skills</label>
           <div className="skills-row">
             {(form.skills || []).map((s) => (
-              <span key={s.skillId} className="skill-pill">
-                {s.skillName}
-                <button type="button" onClick={() => removeSkill(s.skillId)}>
+              <span key={s.skill_id} className="skill-pill">
+                {s.skill_name}
+                <button type="button" onClick={() => removeSkill(s.skill_id)}>
                   &times;
                 </button>
               </span>
@@ -227,8 +228,8 @@ const JobForm = () => {
               {skillQuery && filteredSkills.length > 0 && (
                 <ul className="suggestion-box">
                   {filteredSkills.map((s) => (
-                    <li key={s.skillId} onClick={() => addSkill(s)}>
-                      {s.skillName}
+                    <li key={s.skill_id} onClick={() => addSkill(s)}>
+                      {s.skill_name}
                     </li>
                   ))}
                 </ul>

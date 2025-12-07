@@ -37,6 +37,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link to="/admin/jobs">Manage Jobs</Link>
             </li>
+            <li className="nav-item">
+              <Link to="/admin/candidates">Candidates</Link>
+            </li>
           </>
         ) : null}
 
