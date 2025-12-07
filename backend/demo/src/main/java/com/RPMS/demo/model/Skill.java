@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "skills")
@@ -12,9 +13,11 @@ public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("skill_id")
     private Integer skillId;
 
     @Column(unique = true, nullable = false)
+    @JsonProperty("skill_name")
     private String skillName;
 
     private String description;

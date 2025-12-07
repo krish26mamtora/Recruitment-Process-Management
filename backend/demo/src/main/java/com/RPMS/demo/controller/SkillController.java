@@ -15,7 +15,7 @@ public class SkillController {
     private SkillService skillService;
 
     // ✅ GET: fetch all skills (mapped to /all)
-    @GetMapping("/all")
+    @GetMapping
     public List<Skill> getAllSkills() {
         return skillService.getAllSkills();
     }

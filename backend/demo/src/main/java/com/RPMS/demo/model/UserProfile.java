@@ -24,17 +24,7 @@ public class UserProfile {
 
     // 3. Technical Skills (store as comma-separated tags)
     @Column(columnDefinition = "TEXT")
-    private String skillsLanguages;
-    @Column(columnDefinition = "TEXT")
-    private String skillsFrameworks;
-    @Column(columnDefinition = "TEXT")
-    private String skillsTools;
-    @Column(columnDefinition = "TEXT")
-    private String skillsCloud;
-    @Column(columnDefinition = "TEXT")
-    private String skillsDatabases;
-    @Column(columnDefinition = "TEXT")
-    private String skillsOther;
+    private String skills;
 
     // 4. Work Experience (JSON array as TEXT)
     @Lob
@@ -61,6 +51,14 @@ public class UserProfile {
     @Column(columnDefinition = "TEXT")
     private String attachmentsJson;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "resume")
+    private byte[] resume;
+
+    private String resumeFileName;
+    private String resumeFileType;
+
     // 9. Additional Preferred Fields
     private String linkedin;
     private String github;
@@ -79,87 +77,211 @@ public class UserProfile {
     }
 
     // Getters and Setters
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public Long getUserId() {
+        return userId;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getProfilePhotoUrl() { return profilePhotoUrl; }
-    public void setProfilePhotoUrl(String profilePhotoUrl) { this.profilePhotoUrl = profilePhotoUrl; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getCurrentJobTitle() { return currentJobTitle; }
-    public void setCurrentJobTitle(String currentJobTitle) { this.currentJobTitle = currentJobTitle; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public String getSummary() { return summary; }
-    public void setSummary(String summary) { this.summary = summary; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public String getSkillsLanguages() { return skillsLanguages; }
-    public void setSkillsLanguages(String skillsLanguages) { this.skillsLanguages = skillsLanguages; }
+    public String getCity() {
+        return city;
+    }
 
-    public String getSkillsFrameworks() { return skillsFrameworks; }
-    public void setSkillsFrameworks(String skillsFrameworks) { this.skillsFrameworks = skillsFrameworks; }
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-    public String getSkillsTools() { return skillsTools; }
-    public void setSkillsTools(String skillsTools) { this.skillsTools = skillsTools; }
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
 
-    public String getSkillsCloud() { return skillsCloud; }
-    public void setSkillsCloud(String skillsCloud) { this.skillsCloud = skillsCloud; }
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
+    }
 
-    public String getSkillsDatabases() { return skillsDatabases; }
-    public void setSkillsDatabases(String skillsDatabases) { this.skillsDatabases = skillsDatabases; }
+    public String getCurrentJobTitle() {
+        return currentJobTitle;
+    }
 
-    public String getSkillsOther() { return skillsOther; }
-    public void setSkillsOther(String skillsOther) { this.skillsOther = skillsOther; }
+    public void setCurrentJobTitle(String currentJobTitle) {
+        this.currentJobTitle = currentJobTitle;
+    }
 
-    public String getExperiencesJson() { return experiencesJson; }
-    public void setExperiencesJson(String experiencesJson) { this.experiencesJson = experiencesJson; }
+    public String getSummary() {
+        return summary;
+    }
 
-    public String getEducationJson() { return educationJson; }
-    public void setEducationJson(String educationJson) { this.educationJson = educationJson; }
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
 
-    public String getCertificationsJson() { return certificationsJson; }
-    public void setCertificationsJson(String certificationsJson) { this.certificationsJson = certificationsJson; }
+    public String getSkills() {
+        return skills;
+    }
 
-    public String getProjectsJson() { return projectsJson; }
-    public void setProjectsJson(String projectsJson) { this.projectsJson = projectsJson; }
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
 
-    public String getAttachmentsJson() { return attachmentsJson; }
-    public void setAttachmentsJson(String attachmentsJson) { this.attachmentsJson = attachmentsJson; }
+    public String getExperiencesJson() {
+        return experiencesJson;
+    }
 
-    public String getLinkedin() { return linkedin; }
-    public void setLinkedin(String linkedin) { this.linkedin = linkedin; }
+    public void setExperiencesJson(String experiencesJson) {
+        this.experiencesJson = experiencesJson;
+    }
 
-    public String getGithub() { return github; }
-    public void setGithub(String github) { this.github = github; }
+    public String getEducationJson() {
+        return educationJson;
+    }
 
-    public String getPortfolio() { return portfolio; }
-    public void setPortfolio(String portfolio) { this.portfolio = portfolio; }
+    public void setEducationJson(String educationJson) {
+        this.educationJson = educationJson;
+    }
 
-    public Integer getExpectedSalary() { return expectedSalary; }
-    public void setExpectedSalary(Integer expectedSalary) { this.expectedSalary = expectedSalary; }
+    public String getCertificationsJson() {
+        return certificationsJson;
+    }
 
-    public String getNoticePeriod() { return noticePeriod; }
-    public void setNoticePeriod(String noticePeriod) { this.noticePeriod = noticePeriod; }
+    public void setCertificationsJson(String certificationsJson) {
+        this.certificationsJson = certificationsJson;
+    }
 
-    public String getPreferredJobLocation() { return preferredJobLocation; }
-    public void setPreferredJobLocation(String preferredJobLocation) { this.preferredJobLocation = preferredJobLocation; }
+    public String getProjectsJson() {
+        return projectsJson;
+    }
 
-    public String getJobTypePreference() { return jobTypePreference; }
-    public void setJobTypePreference(String jobTypePreference) { this.jobTypePreference = jobTypePreference; }
+    public void setProjectsJson(String projectsJson) {
+        this.projectsJson = projectsJson;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getAttachmentsJson() {
+        return attachmentsJson;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setAttachmentsJson(String attachmentsJson) {
+        this.attachmentsJson = attachmentsJson;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
+
+    public String getGithub() {
+        return github;
+    }
+
+    public void setGithub(String github) {
+        this.github = github;
+    }
+
+    public String getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(String portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public Integer getExpectedSalary() {
+        return expectedSalary;
+    }
+
+    public void setExpectedSalary(Integer expectedSalary) {
+        this.expectedSalary = expectedSalary;
+    }
+
+    public String getNoticePeriod() {
+        return noticePeriod;
+    }
+
+    public void setNoticePeriod(String noticePeriod) {
+        this.noticePeriod = noticePeriod;
+    }
+
+    public String getPreferredJobLocation() {
+        return preferredJobLocation;
+    }
+
+    public void setPreferredJobLocation(String preferredJobLocation) {
+        this.preferredJobLocation = preferredJobLocation;
+    }
+
+    public String getJobTypePreference() {
+        return jobTypePreference;
+    }
+
+    public void setJobTypePreference(String jobTypePreference) {
+        this.jobTypePreference = jobTypePreference;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public byte[] getResume() {
+        return resume;
+    }
+
+    public void setResume(byte[] resume) {
+        this.resume = resume;
+    }
+
+    public String getResumeFileName() {
+        return resumeFileName;
+    }
+
+    public void setResumeFileName(String resumeFileName) {
+        this.resumeFileName = resumeFileName;
+    }
+
+    public String getResumeFileType() {
+        return resumeFileType;
+    }
+
+    public void setResumeFileType(String resumeFileType) {
+        this.resumeFileType = resumeFileType;
+    }
 }

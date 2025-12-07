@@ -1,5 +1,6 @@
 package com.RPMS.demo.controller;
 
+import com.RPMS.demo.dto.UserDto;
 import com.RPMS.demo.model.User;
 import com.RPMS.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +12,20 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"}) // React frontend
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174" }) // React frontend
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     // Alias to support frontend that calls /api/users/all
     @GetMapping("/all")
-    public List<User> getAllUsersAlias() {
+    public List<UserDto> getAllUsersAlias() {
         return userService.getAllUsers();
     }
 
@@ -42,7 +43,7 @@ public class UserController {
     // New endpoint to support PUT /api/users/{id}/roles used by AdminUsers.jsx
     @PutMapping("/{id}/roles")
     public ResponseEntity<String> updateUserRolesPut(@PathVariable("id") Long userId,
-                                                     @RequestBody RoleUpdateRequest request) {
+            @RequestBody RoleUpdateRequest request) {
         userService.setUserRoles(userId, request.getRoles());
         return ResponseEntity.ok("Roles updated successfully");
     }
@@ -51,7 +52,8 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
         // As per UI note: initial password equals email
-        User user = userService.registerUser(request.getUsername(), request.getFullName(), request.getEmail(), request.getEmail());
+        User user = userService.registerUser(request.getUsername(), request.getFullName(), request.getEmail(),
+                request.getEmail());
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             userService.setUserRoles(user.getUserId(), request.getRoles());
             // refresh entity after role update
@@ -67,10 +69,12 @@ public class UserController {
         int skipped = 0;
         for (BulkCreateItem it : items) {
             try {
-                String username = (it.getUsername() != null && !it.getUsername().isBlank()) ? it.getUsername() : it.getEmail();
+                String username = (it.getUsername() != null && !it.getUsername().isBlank()) ? it.getUsername()
+                        : it.getEmail();
                 String fullName = it.getFullName();
                 String email = it.getEmail();
-                String password = (it.getPassword() != null && !it.getPassword().isBlank()) ? it.getPassword() : it.getEmail();
+                String password = (it.getPassword() != null && !it.getPassword().isBlank()) ? it.getPassword()
+                        : it.getEmail();
                 if (email == null || email.isBlank()) {
                     skipped++;
                     continue;
@@ -94,10 +98,22 @@ public class UserController {
     public static class RoleUpdateRequest {
         private Long userId;
         private Set<String> roles;
-        public Long getUserId() { return userId; }
-        public void setUserId(Long userId) { this.userId = userId; }
-        public Set<String> getRoles() { return roles; }
-        public void setRoles(Set<String> roles) { this.roles = roles; }
+
+        public Long getUserId() {
+            return userId;
+        }
+
+        public void setUserId(Long userId) {
+            this.userId = userId;
+        }
+
+        public Set<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(Set<String> roles) {
+            this.roles = roles;
+        }
     }
 
     public static class CreateUserRequest {
@@ -105,14 +121,38 @@ public class UserController {
         private String fullName;
         private String email;
         private Set<String> roles;
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getFullName() { return fullName; }
-        public void setFullName(String fullName) { this.fullName = fullName; }
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public Set<String> getRoles() { return roles; }
-        public void setRoles(Set<String> roles) { this.roles = roles; }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public Set<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(Set<String> roles) {
+            this.roles = roles;
+        }
     }
 
     // DTOs for bulk create
@@ -122,24 +162,66 @@ public class UserController {
         private String email;
         private String password;
         private Set<String> roles;
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getFullName() { return fullName; }
-        public void setFullName(String fullName) { this.fullName = fullName; }
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-        public Set<String> getRoles() { return roles; }
-        public void setRoles(Set<String> roles) { this.roles = roles; }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public Set<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(Set<String> roles) {
+            this.roles = roles;
+        }
     }
 
     public static class BulkCreateResponse {
         private int createdCount;
         private int skippedCount;
-        public int getCreatedCount() { return createdCount; }
-        public void setCreatedCount(int createdCount) { this.createdCount = createdCount; }
-        public int getSkippedCount() { return skippedCount; }
-        public void setSkippedCount(int skippedCount) { this.skippedCount = skippedCount; }
+
+        public int getCreatedCount() {
+            return createdCount;
+        }
+
+        public void setCreatedCount(int createdCount) {
+            this.createdCount = createdCount;
+        }
+
+        public int getSkippedCount() {
+            return skippedCount;
+        }
+
+        public void setSkippedCount(int skippedCount) {
+            this.skippedCount = skippedCount;
+        }
     }
 }
