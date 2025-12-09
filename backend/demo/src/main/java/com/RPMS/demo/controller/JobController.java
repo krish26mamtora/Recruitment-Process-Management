@@ -2,6 +2,7 @@ package com.RPMS.demo.controller;
 
 import com.RPMS.demo.model.Job;
 import com.RPMS.demo.repository.JobRepository;
+import com.RPMS.demo.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,9 @@ public class JobController {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private JobService jobService;
+
     @GetMapping
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
@@ -21,7 +25,7 @@ public class JobController {
 
     @PostMapping
     public Job createJob(@RequestBody Job job) {
-        return jobRepository.save(job);
+        return jobService.createJob(job);
     }
 
     @GetMapping("/{id}")

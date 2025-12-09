@@ -4,8 +4,10 @@ import com.RPMS.demo.model.JobApplication;
 import com.RPMS.demo.repository.JobApplicationRepository;
 import com.RPMS.demo.repository.JobRepository;
 import com.RPMS.demo.repository.UserRepository;
+import com.RPMS.demo.repository.UserProfileRepository;
 import com.RPMS.demo.model.Job;
 import com.RPMS.demo.model.User;
+import com.RPMS.demo.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ public class JobApplicationService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
     // ✅ Apply for a Job
     public JobApplication applyForJob(Integer jobId, Long candidateId,
@@ -83,5 +88,42 @@ public class JobApplicationService {
     public JobApplication getApplicationById(Long id) {
         return jobApplicationRepository.findById(id.intValue())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
+    }
+
+    @Transactional
+    public JobApplication mapCandidateToJob(Integer jobId, Long candidateId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        User candidate = userRepository.findById(candidateId)
+                .orElseThrow(() -> new RuntimeException("Candidate not found"));
+
+        UserProfile profile = userProfileRepository.findById(candidateId).orElse(null);
+
+        JobApplication app = new JobApplication();
+        app.setJob(job);
+        app.setCandidate(candidate);
+        if (profile != null) {
+            app.setFullName(profile.getFullName());
+            app.setEmail(profile.getEmail());
+            app.setPhone(profile.getPhone() != null ? profile.getPhone() : "");
+            if (profile.getResume() != null && profile.getResume().length > 0) {
+                app.setResumeData(profile.getResume());
+                app.setFileName(profile.getResumeFileName());
+                app.setContentType(profile.getResumeFileType());
+            }
+        } else {
+            app.setFullName(candidate.getFullName());
+            app.setEmail(candidate.getEmail());
+            app.setPhone("");
+        }
+        app.setStatus("Applied");
+        // ensure legacy NOT NULL DB constraints are satisfied
+        if (app.getResumeData() == null)
+            app.setResumeData(new byte[0]);
+        if (app.getFileName() == null)
+            app.setFileName("N/A");
+        if (app.getContentType() == null)
+            app.setContentType("application/octet-stream");
+        return jobApplicationRepository.save(app);
     }
 }

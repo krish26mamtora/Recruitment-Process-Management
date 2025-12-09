@@ -45,16 +45,17 @@ const JobApplicationModal = ({ candidateId, onClose }) => {
 
     const calculateMatchScore = (job, profile) => {
         const candidateSkills = (profile.skills || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
-        const requiredSkills = (job.requiredSkills || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
-        const preferredSkills = (job.preferredSkills || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+        const jobSkills = Array.isArray(job.skills) ? job.skills : [];
+        const requiredSkills = jobSkills.filter(s => s.required).map(s => (s.skillName || '').toLowerCase()).filter(Boolean);
+        const preferredSkills = jobSkills.filter(s => !s.required).map(s => (s.skillName || '').toLowerCase()).filter(Boolean);
 
         const matchedRequired = requiredSkills.filter(skill => candidateSkills.includes(skill));
         const missingRequired = requiredSkills.filter(skill => !candidateSkills.includes(skill));
         const matchedPreferred = preferredSkills.filter(skill => candidateSkills.includes(skill));
 
         let score = 0;
-        score += matchedRequired.length * 2; // 2 points for each required skill
-        score += matchedPreferred.length * 1; // 1 point for each preferred skill
+        score += matchedRequired.length * 2;
+        score += matchedPreferred.length * 1;
 
         const totalExperience = profile.experiencesJson ? JSON.parse(profile.experiencesJson).reduce((acc, exp) => {
             const startDate = new Date(exp.startDate);
@@ -68,11 +69,12 @@ const JobApplicationModal = ({ candidateId, onClose }) => {
             return acc;
         }, 0) / 12 : 0;
 
-        const meetsExperience = job.minExperienceRequired && totalExperience >= job.minExperienceRequired;
-        if (meetsExperience) {
-            score += 5; // 5 points for meeting min experience
-            const experienceBonus = Math.floor(totalExperience - job.minExperienceRequired);
-            score += Math.min(experienceBonus, 5); // Cap bonus at 5 points
+        const minExp = Number(job.minExperienceYears || 0);
+        const meetsExperience = totalExperience >= minExp;
+        if (meetsExperience && minExp > 0) {
+            score += 5;
+            const experienceBonus = Math.floor(totalExperience - minExp);
+            score += Math.min(Math.max(experienceBonus, 0), 5);
         }
 
         return {
@@ -84,33 +86,27 @@ const JobApplicationModal = ({ candidateId, onClose }) => {
             missingRequired,
             matchedPreferred,
             totalExperience,
-            meetsExperience
+            meetsExperience,
+            minExp
         };
     };
 
     const handleApply = async (jobId) => {
-        if (window.confirm(`Are you sure you want to apply this candidate to this job?`)) {
+        if (window.confirm(`Apply / map this candidate to job #${jobId}?`)) {
             setApplying(jobId);
             try {
-                const response = await fetch('http://localhost:8081/api/job-applications', {
+                const response = await fetch('http://localhost:8081/api/job-applications/map', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        userId: candidateId,
-                        jobId: jobId,
-                        status: 'Applied'
-                    }),
+                    body: JSON.stringify({ jobId, candidateId }),
                 });
-
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to submit application');
+                    const text = await response.text();
+                    throw new Error(text || 'Failed to map candidate');
                 }
-
-                toast.success('Application submitted successfully!');
-                onClose(); // Close modal on successful application
+                toast.success('Candidate mapped to job');
             } catch (error) {
                 console.error('Application error:', error);
                 toast.error(error.message);
@@ -125,7 +121,7 @@ const JobApplicationModal = ({ candidateId, onClose }) => {
             <div className="modal-content">
                 <div className="modal-header">
                     <h2>Available Job Positions</h2>
-                    <button onClick={onClose} className="close-button">&times;</button>
+                    <button onClick={onClose} className="close-modal">Close</button>
                 </div>
                 <div className="modal-body">
                     {loading ? (
@@ -133,33 +129,31 @@ const JobApplicationModal = ({ candidateId, onClose }) => {
                     ) : (
                         <div className="job-list">
                             {jobs.map((job, index) => (
-                                <div key={job.id} className={`job-card ${index === 0 ? 'recommended' : ''}`}>
+                                <div key={job.jobId} className={`job-card ${index === 0 ? 'recommended' : ''}`}>
                                     <div className="job-card-header">
                                         <h3>{job.title}</h3>
                                         <span className="match-score">Match Score: {job.matchDetails.score.toFixed(2)}</span>
                                     </div>
-                                    <p><strong>Location:</strong> {job.location}</p>
                                     <div className="match-details">
-                                        <p><strong>Experience:</strong> {job.matchDetails.totalExperience.toFixed(1)} years (Required: {job.minExperienceRequired} years) - {job.matchDetails.meetsExperience ? <span className='met'>Met</span> : <span className='unmet'>Not Met</span>}</p>
-                                        <div><strong>Required Skills:</strong>
+                                        <p><strong>Experience:</strong> {job.matchDetails.totalExperience.toFixed(1)} years (Required: {job.matchDetails.minExp} years) - {job.matchDetails.meetsExperience ? <span className='met'>Met</span> : <span className='unmet'>Not Met</span>}</p>
+                                        <div><strong>Required Skills ({job.matchDetails.matchedRequired.length}/{job.matchDetails.requiredSkills.length}):</strong>
                                             {job.matchDetails.requiredSkills.map(s => (
                                                 <span key={s} className={`skill-tag ${job.matchDetails.matchedRequired.includes(s) ? 'met' : 'unmet'}`}>{s}</span>
                                             ))}
                                         </div>
-                                        {job.matchDetails.preferredSkills.length > 0 && <div><strong>Preferred Skills:</strong>
+                                        {job.matchDetails.preferredSkills.length > 0 && <div><strong>Preferred Skills ({job.matchDetails.matchedPreferred.length}/{job.matchDetails.preferredSkills.length}):</strong>
                                             {job.matchDetails.preferredSkills.map(s => (
                                                 <span key={s} className={`skill-tag ${job.matchDetails.matchedPreferred.includes(s) ? 'met' : 'unmet'}`}>{s}</span>
                                             ))}
                                         </div>}
                                     </div>
-                                    {index === 0 && <span className="recommended-badge">Recommended</span>}
                                     <div className="job-card-actions">
                                         <button
                                             className="primary"
-                                            onClick={() => handleApply(job.id)}
-                                            disabled={applying === job.id}
+                                            onClick={() => handleApply(job.jobId)}
+                                            disabled={applying === job.jobId}
                                         >
-                                            {applying === job.id ? 'Applying...' : 'Apply Candidate'}
+                                            {applying === job.jobId ? 'Applying...' : 'Apply / Map Candidate'}
                                         </button>
                                     </div>
                                 </div>

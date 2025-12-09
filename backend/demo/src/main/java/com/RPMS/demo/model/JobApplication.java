@@ -79,14 +79,14 @@ public class JobApplication {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @JsonIgnore
-    @Column(name = "resume_data", nullable = false)
-    private byte[] resumeData;
+    @Column(name = "resume_data")
+    private byte[] resumeData = new byte[0];
 
-    @Column(name = "file_name", nullable = false)
-    private String fileName;
+    @Column(name = "file_name")
+    private String fileName = "N/A";
 
-    @Column(name = "content_type", nullable = false)
-    private String contentType;
+    @Column(name = "content_type")
+    private String contentType = "application/octet-stream";
 
     // --- Application Metadata ---
     @Column(name = "application_date", nullable = false)
@@ -108,6 +108,24 @@ public class JobApplication {
         }
         if (candidate != null) {
             this.candidateIdFk = candidate.getUserId();
+        }
+        if (this.resumeData == null) {
+            this.resumeData = new byte[0];
+        }
+        if (this.fileName == null) {
+            this.fileName = "N/A";
+        }
+        if (this.contentType == null) {
+            this.contentType = "application/octet-stream";
+        }
+        if (this.phone == null) {
+            this.phone = "";
+        }
+        if (this.applicationDate == null) {
+            this.applicationDate = Instant.now();
+        }
+        if (this.status == null) {
+            this.status = "Pending";
         }
     }
 

@@ -50,8 +50,10 @@ public class JobApplicationController {
         public static JobApplicationDTO from(JobApplication app) {
             JobApplicationDTO dto = new JobApplicationDTO();
             dto.id = app.getId();
-            dto.jobId = app.getJobIdFk();
-            dto.candidateId = app.getCandidateIdFk();
+            dto.jobId = app.getJobIdFk() != null ? app.getJobIdFk()
+                    : (app.getJob() != null ? app.getJob().getJobId() : null);
+            dto.candidateId = app.getCandidateIdFk() != null ? app.getCandidateIdFk()
+                    : (app.getCandidate() != null ? app.getCandidate().getUserId() : null);
             dto.fullName = app.getFullName();
             dto.email = app.getEmail();
             dto.phone = app.getPhone();
@@ -108,6 +110,25 @@ public class JobApplicationController {
             log.error("Failed to fetch applications for candidate {}", candidateId, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Failed to fetch candidate applications");
+        }
+    }
+
+    public static class MapRequest {
+        public Integer jobId;
+        public Long candidateId;
+    }
+
+    @PostMapping("/map")
+    public JobApplicationDTO mapCandidateToJob(@RequestBody MapRequest req) {
+        if (req == null || req.jobId == null || req.candidateId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jobId and candidateId are required");
+        }
+        try {
+            JobApplication app = jobApplicationService.mapCandidateToJob(req.jobId, req.candidateId);
+            return JobApplicationDTO.from(app);
+        } catch (Exception e) {
+            log.error("Failed to map candidate {} to job {}", req.candidateId, req.jobId, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

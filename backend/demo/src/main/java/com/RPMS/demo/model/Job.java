@@ -145,7 +145,8 @@ public class Job {
     @jakarta.persistence.Transient
     @com.fasterxml.jackson.annotation.JsonProperty("skills")
     public java.util.List<java.util.Map<String, Object>> getSkills() {
-        if (jobSkills == null) return new java.util.ArrayList<>();
+        if (jobSkills == null)
+            return new java.util.ArrayList<>();
         java.util.List<java.util.Map<String, Object>> list = new java.util.ArrayList<>();
         for (JobSkill js : jobSkills) {
             Skill s = js.getSkill();
@@ -158,5 +159,42 @@ public class Job {
             }
         }
         return list;
+    }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("skills")
+    public void setSkills(java.util.List<java.util.Map<String, Object>> skillsPayload) {
+        if (skillsPayload == null) {
+            this.jobSkills = null;
+            return;
+        }
+        java.util.Set<JobSkill> set = new java.util.HashSet<>();
+        for (java.util.Map<String, Object> m : skillsPayload) {
+            Object idObj = m.containsKey("skillId") ? m.get("skillId") : m.get("skill_id");
+            if (idObj == null)
+                continue;
+            Integer skillId;
+            if (idObj instanceof Number) {
+                skillId = ((Number) idObj).intValue();
+            } else {
+                try {
+                    skillId = java.lang.Integer.valueOf(idObj.toString());
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+            Object reqObj = m.get("required");
+            java.lang.Boolean required = (reqObj == null) ? java.lang.Boolean.TRUE
+                    : java.lang.Boolean.valueOf(reqObj.toString());
+
+            Skill skillRef = new Skill();
+            skillRef.setSkillId(skillId);
+
+            JobSkill js = new JobSkill();
+            js.setJob(this);
+            js.setSkill(skillRef);
+            js.setRequired(required);
+            set.add(js);
+        }
+        this.jobSkills = set;
     }
 }
