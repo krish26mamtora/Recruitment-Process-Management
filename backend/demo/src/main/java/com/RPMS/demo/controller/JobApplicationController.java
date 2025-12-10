@@ -118,6 +118,18 @@ public class JobApplicationController {
         public Long candidateId;
     }
 
+    public static class ScheduleInterviewRequest {
+        public String round;
+        public String scheduledAt;
+        public String meetLink;
+        public String message;
+    }
+
+    public static class UpdateStatusRequest {
+        public String status;
+        public String remarks;
+    }
+
     @PostMapping("/map")
     public JobApplicationDTO mapCandidateToJob(@RequestBody MapRequest req) {
         if (req == null || req.jobId == null || req.candidateId == null) {
@@ -128,6 +140,27 @@ public class JobApplicationController {
             return JobApplicationDTO.from(app);
         } catch (Exception e) {
             log.error("Failed to map candidate {} to job {}", req.candidateId, req.jobId, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/schedule-interview")
+    public JobApplicationDTO scheduleInterview(@PathVariable Long id, @RequestBody ScheduleInterviewRequest req) {
+        try {
+            JobApplication app = jobApplicationService.scheduleInterview(id,
+                    req.round, req.scheduledAt, req.meetLink, req.message);
+            return JobApplicationDTO.from(app);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/status")
+    public JobApplicationDTO updateStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest req) {
+        try {
+            JobApplication app = jobApplicationService.updateApplicationStatus(id, req.status, req.remarks);
+            return JobApplicationDTO.from(app);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

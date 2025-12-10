@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.time.Instant;
 
 @Service
 public class JobApplicationService {
@@ -140,6 +141,57 @@ public class JobApplicationService {
                 app.getFullName(),
                 job.getTitle(),
                 false));
+        return saved;
+    }
+
+    @Transactional
+    public JobApplication scheduleInterview(Long applicationId, String round, String scheduledAtIso, String meetLink,
+            String message) {
+        JobApplication app = getApplicationById(applicationId);
+        Job job = app.getJob();
+        User candidate = app.getCandidate();
+        String r = (round != null && !round.isBlank()) ? round : "Technical";
+        Instant when = null;
+        try {
+            when = Instant.parse(scheduledAtIso);
+        } catch (Exception ignored) {
+        }
+        String whenText = scheduledAtIso != null ? scheduledAtIso : "TBD";
+        String link = (meetLink != null && !meetLink.isBlank()) ? meetLink : "https://meet.google.com/dummy-link";
+        app.setStatus("Interview - " + r + " scheduled");
+        String details = "Round: " + r + ", When: " + whenText + ", Meet: " + link
+                + (message != null && !message.isBlank() ? (", Notes: " + message) : "");
+        app.setRemarks(details);
+        JobApplication saved = jobApplicationRepository.save(app);
+        eventPublisher.publishEvent(new com.RPMS.demo.event.InterviewScheduledEvent(
+                candidate.getEmail(),
+                app.getFullName(),
+                job.getTitle(),
+                r,
+                whenText,
+                link,
+                message));
+        return saved;
+    }
+
+    @Transactional
+    public JobApplication updateApplicationStatus(Long applicationId, String status, String remarks) {
+        JobApplication app = getApplicationById(applicationId);
+        Job job = app.getJob();
+        User candidate = app.getCandidate();
+        if (status != null && !status.isBlank()) {
+            app.setStatus(status);
+        }
+        if (remarks != null) {
+            app.setRemarks(remarks);
+        }
+        JobApplication saved = jobApplicationRepository.save(app);
+        eventPublisher.publishEvent(new com.RPMS.demo.event.ApplicationStatusUpdatedEvent(
+                candidate.getEmail(),
+                app.getFullName(),
+                job.getTitle(),
+                app.getStatus(),
+                app.getRemarks()));
         return saved;
     }
 }
