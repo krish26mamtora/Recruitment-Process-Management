@@ -50,16 +50,20 @@ public class UserController {
 
     // New endpoint to support POST /api/users/create
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
-        // As per UI note: initial password equals email
-        User user = userService.registerUser(request.getUsername(), request.getFullName(), request.getEmail(),
-                request.getEmail());
-        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
-            userService.setUserRoles(user.getUserId(), request.getRoles());
-            // refresh entity after role update
-            user = userService.getUserById(user.getUserId());
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
+        try {
+            User user = userService.registerUser(request.getUsername(), request.getFullName(), request.getEmail(),
+                    request.getEmail());
+            if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+                userService.setUserRoles(user.getUserId(), request.getRoles());
+                // refresh entity after role update
+                user = userService.getUserById(user.getUserId());
+            }
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
         }
-        return ResponseEntity.ok(user);
     }
 
     // Bulk create candidates from parsed Excel (frontend sends JSON array)

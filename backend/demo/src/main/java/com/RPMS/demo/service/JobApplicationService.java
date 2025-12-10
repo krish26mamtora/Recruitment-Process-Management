@@ -9,6 +9,7 @@ import com.RPMS.demo.model.Job;
 import com.RPMS.demo.model.User;
 import com.RPMS.demo.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,9 @@ public class JobApplicationService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     // ✅ Apply for a Job
     public JobApplication applyForJob(Integer jobId, Long candidateId,
@@ -63,7 +67,13 @@ public class JobApplicationService {
         application.setContentType(resumeFile.getContentType());
         application.setResumeData(resumeFile.getBytes());
 
-        return jobApplicationRepository.save(application);
+        JobApplication saved = jobApplicationRepository.save(application);
+        eventPublisher.publishEvent(new com.RPMS.demo.event.CandidateJobAssignmentEvent(
+                candidate.getEmail(),
+                application.getFullName(),
+                job.getTitle(),
+                true));
+        return saved;
     }
 
     // ✅ Fetch All Job Applications
@@ -124,6 +134,12 @@ public class JobApplicationService {
             app.setFileName("N/A");
         if (app.getContentType() == null)
             app.setContentType("application/octet-stream");
-        return jobApplicationRepository.save(app);
+        JobApplication saved = jobApplicationRepository.save(app);
+        eventPublisher.publishEvent(new com.RPMS.demo.event.CandidateJobAssignmentEvent(
+                candidate.getEmail(),
+                app.getFullName(),
+                job.getTitle(),
+                false));
+        return saved;
     }
 }
