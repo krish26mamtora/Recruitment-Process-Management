@@ -21,8 +21,7 @@ public class InterviewEventListener {
                 event.getRound(),
                 event.getScheduledAtText(),
                 event.getMeetLink(),
-                event.getMessage()
-        );
+                event.getMessage());
     }
 
     @EventListener
@@ -32,8 +31,6 @@ public class InterviewEventListener {
                 event.getCandidateName(),
                 event.getJobTitle(),
                 event.getStatus(),
-                event.getRemarks()
-        );
+                event.getRemarks());
     }
 }
-
