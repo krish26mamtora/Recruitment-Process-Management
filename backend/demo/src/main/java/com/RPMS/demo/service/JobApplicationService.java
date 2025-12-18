@@ -1,13 +1,16 @@
 package com.RPMS.demo.service;
 
 import com.RPMS.demo.model.JobApplication;
+import com.RPMS.demo.model.InterviewPanel;
 import com.RPMS.demo.repository.JobApplicationRepository;
 import com.RPMS.demo.repository.JobRepository;
 import com.RPMS.demo.repository.UserRepository;
 import com.RPMS.demo.repository.UserProfileRepository;
+import com.RPMS.demo.repository.InterviewPanelRepository;
 import com.RPMS.demo.model.Job;
 import com.RPMS.demo.model.User;
 import com.RPMS.demo.model.UserProfile;
+import com.RPMS.demo.dto.InterviewDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.time.Instant;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 @Service
 public class JobApplicationService {
@@ -31,6 +38,9 @@ public class JobApplicationService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private InterviewPanelRepository interviewPanelRepository;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -163,6 +173,19 @@ public class JobApplicationService {
                 + (message != null && !message.isBlank() ? (", Notes: " + message) : "");
         app.setRemarks(details);
         JobApplication saved = jobApplicationRepository.save(app);
+
+        // Save interviewer emails to database
+        if (interviewerEmails != null && !interviewerEmails.isEmpty()) {
+            // Clear existing interviewers for this application
+            interviewPanelRepository.deleteByApplicationId(saved.getId());
+            // Save new interviewers
+            for (String email : interviewerEmails) {
+                if (email != null && !email.isBlank()) {
+                    interviewPanelRepository.save(new InterviewPanel(saved.getId(), email));
+                }
+            }
+        }
+
         eventPublisher.publishEvent(new com.RPMS.demo.event.InterviewScheduledEvent(
                 app.getEmail() != null && !app.getEmail().isBlank() ? app.getEmail() : candidate.getEmail(),
                 app.getFullName(),
@@ -194,5 +217,75 @@ public class JobApplicationService {
                 app.getStatus(),
                 app.getRemarks()));
         return saved;
+    }
+
+    public List<InterviewDetailsDTO> getAllScheduledInterviews() {
+        List<JobApplication> allApplications = jobApplicationRepository.findAll();
+        List<InterviewDetailsDTO> interviews = new ArrayList<>();
+
+        for (JobApplication app : allApplications) {
+            // Check if status contains "Interview" and "scheduled"
+            if (app.getStatus() != null &&
+                    app.getStatus().toLowerCase().contains("interview") &&
+                    app.getStatus().toLowerCase().contains("scheduled")) {
+
+                // Parse details from remarks
+                String round = extractRound(app.getStatus());
+                String scheduledAt = extractFromRemarks(app.getRemarks(), "When:");
+                String meetLink = extractFromRemarks(app.getRemarks(), "Meet:");
+                String message = extractFromRemarks(app.getRemarks(), "Notes:");
+
+                // Get interviewer emails from database
+                List<String> interviewerEmails = interviewPanelRepository.findByApplicationId(app.getId())
+                        .stream()
+                        .map(InterviewPanel::getInterviewerEmail)
+                        .collect(Collectors.toList());
+
+                Job job = app.getJob();
+                InterviewDetailsDTO dto = new InterviewDetailsDTO(
+                        app.getId().longValue(),
+                        app.getFullName(),
+                        app.getEmail(),
+                        job != null ? job.getTitle() : "Unknown",
+                        job != null ? job.getJobId() : null,
+                        round,
+                        scheduledAt,
+                        meetLink,
+                        message,
+                        app.getStatus(),
+                        interviewerEmails);
+                interviews.add(dto);
+            }
+        }
+
+        return interviews;
+    }
+
+    private String extractRound(String status) {
+        // Extract round from status like "Interview - Technical scheduled"
+        if (status == null)
+            return "";
+        Pattern pattern = Pattern.compile("Interview - (.+?) scheduled");
+        Matcher matcher = pattern.matcher(status);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
+    private String extractFromRemarks(String remarks, String key) {
+        if (remarks == null || !remarks.contains(key))
+            return "";
+        try {
+            int startIndex = remarks.indexOf(key) + key.length();
+            int endIndex = remarks.indexOf(",", startIndex);
+            if (endIndex == -1)
+                endIndex = remarks.indexOf("\n", startIndex);
+            if (endIndex == -1)
+                endIndex = remarks.length();
+            return remarks.substring(startIndex, endIndex).trim();
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

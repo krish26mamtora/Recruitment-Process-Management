@@ -17,6 +17,7 @@ import JobApplicationForm from "./pages/Candidate/Jobs/JobApplicationForm";
 import JobApplications from "./pages/Admin/Jobs/JobApplications";
 import AdminUsers from "./pages/Admin/Users/AdminUsers";
 import CandidateList from "./pages/Admin/Candidates/CandidateList";
+import ScheduledInterviews from "./pages/Admin/ScheduledInterviews/ScheduledInterviews";
 import { useParams } from "react-router-dom";
 
 const JobApplicationsForJobRoute = () => {
@@ -48,6 +49,7 @@ const App = () => {
         />
         <Route path="/admin/job-applications" element={<JobApplications />} />
         <Route path="/admin/jobs/:jobId/applications" element={<JobApplicationsForJobRoute />} />
+        <Route path="/admin/scheduled-interviews" element={<ScheduledInterviews />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/users/:userId/profile" element={<CandidateProfile />} />
         <Route path="/admin/candidates" element={<CandidateList />} />

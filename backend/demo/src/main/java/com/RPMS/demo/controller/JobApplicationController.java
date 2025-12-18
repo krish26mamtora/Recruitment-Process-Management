@@ -88,6 +88,11 @@ public class JobApplicationController {
         }
     }
 
+    @GetMapping("/scheduled-interviews")
+    public List<com.RPMS.demo.dto.InterviewDetailsDTO> getAllScheduledInterviews() {
+        return jobApplicationService.getAllScheduledInterviews();
+    }
+
     // ✅ Fetch applications by job ID
     @GetMapping("/job/{jobId}")
     public List<JobApplicationDTO> getApplicationsByJob(@PathVariable Integer jobId) {
