@@ -123,6 +123,7 @@ public class JobApplicationController {
         public String scheduledAt;
         public String meetLink;
         public String message;
+        public java.util.List<String> interviewerEmails; // Panel interview support
     }
 
     public static class UpdateStatusRequest {
@@ -148,7 +149,7 @@ public class JobApplicationController {
     public JobApplicationDTO scheduleInterview(@PathVariable Long id, @RequestBody ScheduleInterviewRequest req) {
         try {
             JobApplication app = jobApplicationService.scheduleInterview(id,
-                    req.round, req.scheduledAt, req.meetLink, req.message);
+                    req.round, req.scheduledAt, req.meetLink, req.message, req.interviewerEmails);
             return JobApplicationDTO.from(app);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

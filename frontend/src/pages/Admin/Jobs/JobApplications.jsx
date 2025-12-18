@@ -12,6 +12,8 @@ const JobApplications = ({ jobId }) => {
   const [scheduledAt, setScheduledAt] = useState("");
   const [meetLink, setMeetLink] = useState("https://meet.google.com/dummy-link");
   const [message, setMessage] = useState("");
+  const [interviewerEmails, setInterviewerEmails] = useState([]);
+  const [currentEmail, setCurrentEmail] = useState("");
   const [newStatus, setNewStatus] = useState("");
   const [newRemarks, setNewRemarks] = useState("");
 
@@ -164,6 +166,70 @@ const JobApplications = ({ jobId }) => {
                 <label>Message</label>
                 <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Any additional instructions" />
               </div>
+              <div className="form-row">
+                <label>Panel Interviewers (Optional)</label>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                  <input
+                    type="email"
+                    value={currentEmail}
+                    onChange={(e) => setCurrentEmail(e.target.value)}
+                    placeholder="interviewer@example.com"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (currentEmail && currentEmail.includes('@')) {
+                          setInterviewerEmails([...interviewerEmails, currentEmail]);
+                          setCurrentEmail('');
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => {
+                      if (currentEmail && currentEmail.includes('@')) {
+                        setInterviewerEmails([...interviewerEmails, currentEmail]);
+                        setCurrentEmail('');
+                      }
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+                {interviewerEmails.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {interviewerEmails.map((email, idx) => (
+                      <span key={idx} style={{
+                        background: '#e3f2fd',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        {email}
+                        <button
+                          type="button"
+                          onClick={() => setInterviewerEmails(interviewerEmails.filter((_, i) => i !== idx))}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#d32f2f',
+                            fontSize: '16px',
+                            padding: '0',
+                            lineHeight: '1'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="modal-footer">
               <button
@@ -176,6 +242,7 @@ const JobApplications = ({ jobId }) => {
                     scheduledAt,
                     meetLink,
                     message,
+                    interviewerEmails,
                   };
                   try {
                     const res = await fetch(`http://localhost:8081/api/job-applications/${selectedApp.id}/schedule-interview`, {
@@ -191,6 +258,8 @@ const JobApplications = ({ jobId }) => {
                     setScheduledAt('');
                     setMeetLink('https://meet.google.com/dummy-link');
                     setMessage('');
+                    setInterviewerEmails([]);
+                    setCurrentEmail('');
                     await loadApplications();
                     alert('Interview scheduled and candidate notified.');
                   } catch (e) {

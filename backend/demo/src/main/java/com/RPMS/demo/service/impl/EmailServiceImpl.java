@@ -3,6 +3,7 @@ package com.RPMS.demo.service.impl;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 import com.RPMS.demo.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ public class EmailServiceImpl implements EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async
     @Override
     public void sendCandidateJobAssignmentEmail(String toEmail, String candidateName, String jobTitle,
             boolean isSelfApplied) {
@@ -33,10 +35,13 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
             log.info("Sent candidate job email to {} for '{}' (selfApplied={})", toEmail, jobTitle, isSelfApplied);
         } catch (Exception e) {
-            log.error("Failed to send candidate job email to {} for '{}'", toEmail, jobTitle, e);
+            log.error("Failed to send candidate job email to {} for '{}'. Error: {}", toEmail, jobTitle,
+                    e.getMessage());
+            log.debug("Email send error details:", e);
         }
     }
 
+    @Async
     @Override
     public void sendInterviewScheduledEmail(String toEmail, String candidateName, String jobTitle,
             String round, String scheduledAtText, String meetLink, String message) {
@@ -55,10 +60,13 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(messageObj);
             log.info("Sent interview scheduled email to {} for '{}'", toEmail, jobTitle);
         } catch (Exception e) {
-            log.error("Failed to send interview scheduled email to {} for '{}'", toEmail, jobTitle, e);
+            log.error("Failed to send interview scheduled email to {} for '{}'. Error: {}", toEmail, jobTitle,
+                    e.getMessage());
+            log.debug("Email send error details:", e);
         }
     }
 
+    @Async
     @Override
     public void sendApplicationStatusUpdateEmail(String toEmail, String candidateName, String jobTitle,
             String status, String remarks) {
@@ -75,7 +83,37 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(messageObj);
             log.info("Sent status update email to {} for '{}'", toEmail, jobTitle);
         } catch (Exception e) {
-            log.error("Failed to send status update email to {} for '{}'", toEmail, jobTitle, e);
+            log.error("Failed to send status update email to {} for '{}'. Error: {}", toEmail, jobTitle,
+                    e.getMessage());
+            log.debug("Email send error details:", e);
+        }
+    }
+
+    @Async
+    @Override
+    public void sendInterviewerNotificationEmail(String toEmail, String candidateName, String jobTitle,
+            String round, String scheduledAtText, String meetLink, String message) {
+        String subject = "Panel Interview: " + jobTitle + " (" + round + ") - " + candidateName;
+        String body = "Hello,\n\n" +
+                "You have been assigned as an interviewer for the following interview:\n\n" +
+                "Candidate: " + candidateName + "\n" +
+                "Position: " + jobTitle + "\n" +
+                "Round: " + round + "\n" +
+                "Date & Time: " + scheduledAtText + "\n" +
+                "Google Meet: " + meetLink +
+                (message != null && !message.isBlank() ? ("\n\nNotes: " + message) : "") +
+                "\n\nPlease join the meeting on time.\n\nRegards,\nRecruitment Team";
+        try {
+            SimpleMailMessage messageObj = new SimpleMailMessage();
+            messageObj.setTo(toEmail);
+            messageObj.setSubject(subject);
+            messageObj.setText(body);
+            mailSender.send(messageObj);
+            log.info("Sent interviewer notification email to {} for '{}'", toEmail, jobTitle);
+        } catch (Exception e) {
+            log.error("Failed to send interviewer notification email to {} for '{}'. Error: {}", toEmail, jobTitle,
+                    e.getMessage());
+            log.debug("Email send error details:", e);
         }
     }
 }

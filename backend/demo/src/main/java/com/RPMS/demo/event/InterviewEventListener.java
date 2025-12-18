@@ -14,6 +14,7 @@ public class InterviewEventListener {
 
     @EventListener
     public void onInterviewScheduled(InterviewScheduledEvent event) {
+        // Send email to candidate
         emailService.sendInterviewScheduledEmail(
                 event.getToEmail(),
                 event.getCandidateName(),
@@ -22,6 +23,22 @@ public class InterviewEventListener {
                 event.getScheduledAtText(),
                 event.getMeetLink(),
                 event.getMessage());
+
+        // Send email to all interviewers (panel interview)
+        if (event.getInterviewerEmails() != null && !event.getInterviewerEmails().isEmpty()) {
+            for (String interviewerEmail : event.getInterviewerEmails()) {
+                if (interviewerEmail != null && !interviewerEmail.isBlank()) {
+                    emailService.sendInterviewerNotificationEmail(
+                            interviewerEmail,
+                            event.getCandidateName(),
+                            event.getJobTitle(),
+                            event.getRound(),
+                            event.getScheduledAtText(),
+                            event.getMeetLink(),
+                            event.getMessage());
+                }
+            }
+        }
     }
 
     @EventListener

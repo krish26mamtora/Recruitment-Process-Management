@@ -146,7 +146,7 @@ public class JobApplicationService {
 
     @Transactional
     public JobApplication scheduleInterview(Long applicationId, String round, String scheduledAtIso, String meetLink,
-            String message) {
+            String message, java.util.List<String> interviewerEmails) {
         JobApplication app = getApplicationById(applicationId);
         Job job = app.getJob();
         User candidate = app.getCandidate();
@@ -164,13 +164,14 @@ public class JobApplicationService {
         app.setRemarks(details);
         JobApplication saved = jobApplicationRepository.save(app);
         eventPublisher.publishEvent(new com.RPMS.demo.event.InterviewScheduledEvent(
-                candidate.getEmail(),
+                app.getEmail() != null && !app.getEmail().isBlank() ? app.getEmail() : candidate.getEmail(),
                 app.getFullName(),
                 job.getTitle(),
                 r,
                 whenText,
                 link,
-                message));
+                message,
+                interviewerEmails));
         return saved;
     }
 
@@ -187,7 +188,7 @@ public class JobApplicationService {
         }
         JobApplication saved = jobApplicationRepository.save(app);
         eventPublisher.publishEvent(new com.RPMS.demo.event.ApplicationStatusUpdatedEvent(
-                candidate.getEmail(),
+                app.getEmail() != null && !app.getEmail().isBlank() ? app.getEmail() : candidate.getEmail(),
                 app.getFullName(),
                 job.getTitle(),
                 app.getStatus(),
