@@ -7,9 +7,11 @@ import com.RPMS.demo.repository.JobRepository;
 import com.RPMS.demo.repository.UserRepository;
 import com.RPMS.demo.repository.UserProfileRepository;
 import com.RPMS.demo.repository.InterviewPanelRepository;
+import com.RPMS.demo.repository.InterviewFeedbackRepository;
 import com.RPMS.demo.model.Job;
 import com.RPMS.demo.model.User;
 import com.RPMS.demo.model.UserProfile;
+import com.RPMS.demo.model.InterviewFeedback;
 import com.RPMS.demo.dto.InterviewDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,6 +43,9 @@ public class JobApplicationService {
 
     @Autowired
     private InterviewPanelRepository interviewPanelRepository;
+
+    @Autowired
+    private InterviewFeedbackRepository interviewFeedbackRepository;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -287,5 +292,26 @@ public class JobApplicationService {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    @Transactional
+    public InterviewFeedback addFeedback(Integer applicationId, String round, String interviewerName, String comments,
+            String ratingsJson) {
+        JobApplication app = jobApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        InterviewFeedback feedback = new InterviewFeedback();
+        feedback.setJobApplication(app);
+        feedback.setRound(round);
+        feedback.setInterviewerName(interviewerName);
+        feedback.setComments(comments);
+        feedback.setRatingsJson(ratingsJson);
+
+        return interviewFeedbackRepository.save(feedback);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InterviewFeedback> getFeedbackByApplicationId(Integer applicationId) {
+        return interviewFeedbackRepository.findByJobApplication_Id(applicationId);
     }
 }

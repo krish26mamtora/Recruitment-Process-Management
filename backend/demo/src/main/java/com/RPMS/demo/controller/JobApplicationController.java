@@ -2,6 +2,7 @@ package com.RPMS.demo.controller;
 
 import com.RPMS.demo.model.JobApplication;
 import com.RPMS.demo.service.JobApplicationService;
+import com.RPMS.demo.dto.InterviewFeedbackDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -136,6 +137,13 @@ public class JobApplicationController {
         public String remarks;
     }
 
+    public static class FeedbackRequest {
+        public String round;
+        public String interviewerName;
+        public String comments;
+        public String ratingsJson;
+    }
+
     @PostMapping("/map")
     public JobApplicationDTO mapCandidateToJob(@RequestBody MapRequest req) {
         if (req == null || req.jobId == null || req.candidateId == null) {
@@ -169,6 +177,35 @@ public class JobApplicationController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @PostMapping("/{id}/feedback")
+    public InterviewFeedbackDTO addFeedback(@PathVariable Integer id, @RequestBody FeedbackRequest req) {
+        try {
+            com.RPMS.demo.model.InterviewFeedback feedback = jobApplicationService.addFeedback(id, req.round,
+                    req.interviewerName, req.comments, req.ratingsJson);
+            return toFeedbackDTO(feedback);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/feedback")
+    public List<InterviewFeedbackDTO> getFeedback(@PathVariable Integer id) {
+        return jobApplicationService.getFeedbackByApplicationId(id)
+                .stream().map(this::toFeedbackDTO).collect(Collectors.toList());
+    }
+
+    private InterviewFeedbackDTO toFeedbackDTO(com.RPMS.demo.model.InterviewFeedback feedback) {
+        InterviewFeedbackDTO dto = new InterviewFeedbackDTO();
+        dto.setId(feedback.getId());
+        dto.setApplicationId(feedback.getJobApplication().getId());
+        dto.setRound(feedback.getRound());
+        dto.setInterviewerName(feedback.getInterviewerName());
+        dto.setComments(feedback.getComments());
+        dto.setRatingsJson(feedback.getRatingsJson());
+        dto.setCreatedAt(feedback.getCreatedAt());
+        return dto;
     }
 
     // ✅ Apply for job
