@@ -1,23 +1,88 @@
-.job-applications-page { padding: 24px; background: var(--bg); min-height: 100vh; }
-
-.job-applications-page h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
+.job-applications-page {
+  padding: 0;
+  background: transparent;
+  min-height: unset;
 }
 
-.applications-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.job-applications-page h1 {
+  margin-bottom: 0;
+}
+
+.applications-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 .applications-table th,
-.applications-table td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+.applications-table td {
+  border-top: 1px solid var(--border-soft);
+  padding: 12px;
+  text-align: left;
+}
 
-.applications-table th { background-color: #f5f7fb; font-weight: 600; }
+.applications-table th {
+  background-color: var(--highlight);
+  font-weight: 650;
+}
 
-.applications-table tr:hover { background-color: #fbfdff; }
+.applications-table tr:hover {
+  background-color: #FBFCFF;
+}
 
-.resume-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+.resume-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
 
-.resume-link:hover { text-decoration: underline; color: var(--primary-hover); }
+.resume-link:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
 
-.loading { text-align: center; margin-top: 20px; font-weight: 500; }
+.loading {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 500;
+}
 
-.empty { text-align: center; color: var(--text-secondary); margin-top: 20px; }
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 20px;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.interviewer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--highlight);
+  color: var(--text-primary);
+}
+
+.interviewer-pill-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+  font-size: 16px;
+  padding: 0;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+
+  .applications-table th,
+  .applications-table td {
+    padding: 10px;
+  }
+}

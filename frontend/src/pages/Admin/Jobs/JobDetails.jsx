@@ -28,8 +28,10 @@ const JobDetails = () => {
 
   if (loading || !job)
     return (
-      <div className="job-details-page">
-        <div className="loading">Loading...</div>
+      <div className="page job-details-page">
+        <div className="page-inner">
+          <div className="loading">Loading...</div>
+        </div>
       </div>
     );
 
@@ -61,95 +63,97 @@ const JobDetails = () => {
   };
 
   return (
-    <div className="job-details-page">
-      <div className="job-details-card">
-        <header className="job-header">
-          <div>
-            <h1>{job.title}</h1>
-            <div className="meta">
-              <span className={`badge ${job.status}`}>{job.status}</span>
-              <span>• ID: {job.jobId}</span>
-              <span>
-                • Created: {new Date(job.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-
-          <div className="header-actions">
-            <button onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}>
-              Edit
-            </button>
-            <button onClick={() => navigate("/admin/jobs")}>Back</button>
-          </div>
-        </header>
-
-        <section className="job-section">
-          <h3>Description</h3>
-          <p className="desc">{job.description || "—"}</p>
-        </section>
-
-        <section className="job-section">
-          <h3>Details</h3>
-          <div className="details-grid">
+    <div className="page job-details-page">
+      <div className="page-inner">
+        <div className="job-details-card">
+          <header className="job-header">
             <div>
-              <strong>Min Experience</strong>
-              <div>{job.minExperienceYears ?? "-"} years</div>
+              <h1>{job.title}</h1>
+              <div className="meta">
+                <span className={`badge ${job.status}`}>{job.status}</span>
+                <span>• ID: {job.jobId}</span>
+                <span>
+                  • Created: {new Date(job.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
-            <div>
-              <strong>Assigned Recruiter</strong>
-              <div>{job.assignedRecruiterName || "-"}</div>
-            </div>
-            <div>
-              <strong>Pipeline</strong>
-              <div>Applied: {job.pipelineCounts?.applied ?? 0}</div>
-              <div>Shortlisted: {job.pipelineCounts?.shortlisted ?? 0}</div>
-            </div>
-          </div>
-        </section>
 
-        <section className="job-section">
-          <h3>Skills</h3>
-          <div className="skills-list">
-            {(job.skills || []).map((s) => (
-              <span key={s.skillId} className="skill-pill">
-                {s.skillName}
-                {s.required ? " • req" : ""}
-              </span>
-            ))}
-            {(!job.skills || job.skills.length === 0) && (
-              <div className="muted">No skills attached</div>
-            )}
-          </div>
-        </section>
-
-        {job.status !== "closed" && (
-          <section className="job-section close-box">
-            <h3>Close Job</h3>
-            <textarea
-              placeholder="Reason for closing"
-              value={closingReason}
-              onChange={(e) => setClosingReason(e.target.value)}
-            />
-            <div className="actions-row">
-              <button className="danger" onClick={handleClose}>
-                Close Job
+            <div className="header-actions">
+              <button className="secondary btn-sm" onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}>
+                Edit
               </button>
+              <button className="secondary btn-sm" onClick={() => navigate("/admin/jobs")}>Back</button>
             </div>
-          </section>
-        )}
+          </header>
 
-        {job.status === "closed" && (
           <section className="job-section">
-            <h3>Closed Info</h3>
-            <div>
-              <strong>Reason:</strong> {job.reasonClosed || "-"}
-            </div>
-            <div>
-              <strong>Closed at:</strong>{" "}
-              {job.closedAt ? new Date(job.closedAt).toLocaleString() : "-"}
+            <h3>Description</h3>
+            <p className="desc">{job.description || "—"}</p>
+          </section>
+
+          <section className="job-section">
+            <h3>Details</h3>
+            <div className="details-grid">
+              <div>
+                <strong>Min Experience</strong>
+                <div>{job.minExperienceYears ?? "-"} years</div>
+              </div>
+              <div>
+                <strong>Assigned Recruiter</strong>
+                <div>{job.assignedRecruiterName || "-"}</div>
+              </div>
+              <div>
+                <strong>Pipeline</strong>
+                <div>Applied: {job.pipelineCounts?.applied ?? 0}</div>
+                <div>Shortlisted: {job.pipelineCounts?.shortlisted ?? 0}</div>
+              </div>
             </div>
           </section>
-        )}
+
+          <section className="job-section">
+            <h3>Skills</h3>
+            <div className="skills-list">
+              {(job.skills || []).map((s) => (
+                <span key={s.skillId} className="skill-pill">
+                  {s.skillName}
+                  {s.required ? " • req" : ""}
+                </span>
+              ))}
+              {(!job.skills || job.skills.length === 0) && (
+                <div className="muted">No skills attached</div>
+              )}
+            </div>
+          </section>
+
+          {job.status !== "closed" && (
+            <section className="job-section close-box">
+              <h3>Close Job</h3>
+              <textarea
+                placeholder="Reason for closing"
+                value={closingReason}
+                onChange={(e) => setClosingReason(e.target.value)}
+              />
+              <div className="actions-row">
+                <button className="danger" onClick={handleClose}>
+                  Close Job
+                </button>
+              </div>
+            </section>
+          )}
+
+          {job.status === "closed" && (
+            <section className="job-section">
+              <h3>Closed Info</h3>
+              <div>
+                <strong>Reason:</strong> {job.reasonClosed || "-"}
+              </div>
+              <div>
+                <strong>Closed at:</strong>{" "}
+                {job.closedAt ? new Date(job.closedAt).toLocaleString() : "-"}
+              </div>
+            </section>
+          )}
+        </div>
       </div>
     </div>
   );

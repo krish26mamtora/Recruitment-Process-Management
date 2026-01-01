@@ -1,15 +1,61 @@
-.job-application-form-page { max-width: 800px; margin: 24px auto; padding: 24px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+.job-application-form-page {
+    max-width: 920px;
+    margin: 24px auto;
+    padding: 20px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-soft);
+}
 
-.job-application-form h1 { text-align: center; margin-bottom: 16px; }
+.job-application-form h1 {
+    text-align: center;
+    margin-bottom: 16px;
+}
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.job-application-form-page .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
 
-label { display: flex; flex-direction: column; }
+.job-application-form-page label {
+    display: flex;
+    flex-direction: column;
+}
 
-.full-width { grid-column: span 2; }
+.job-application-form-page .full-width {
+    grid-column: span 2;
+}
 
-input, select, textarea { margin-top: 6px; }
+.job-application-form-page input,
+.job-application-form-page select,
+.job-application-form-page textarea {
+    margin-top: 6px;
+}
 
-button { margin-top: 20px; width: 100%; padding: 12px; font-size: 16px; }
+.job-application-form-page button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
 
-button:disabled { cursor: not-allowed; }
+.job-application-form-page button:disabled {
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .job-application-form-page {
+        margin: 16px;
+        padding: 16px;
+    }
+
+    .job-application-form-page .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .job-application-form-page .full-width {
+        grid-column: span 1;
+    }
+}

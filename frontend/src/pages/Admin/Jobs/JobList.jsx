@@ -64,73 +64,76 @@ const JobList = () => {
   };
 
   return (
-    <div className="job-list-page">
-      <div className="job-list-header">
-        <h1>Jobs</h1>
-        <div className="job-list-actions">
-          <input
-            className="job-search"
-            placeholder="Search by title or id..."
-            value={q}
-            onChange={(e) => {
-              setQ(e.target.value);
-            }}
-          />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All statuses</option>
-            <option value="open">Open</option>
-            <option value="on_hold">On Hold</option>
-            <option value="closed">Closed</option>
-          </select>
+    <div className="page job-list-page">
+      <div className="page-inner">
+        <div className="page-header job-list-header">
+          <h1 className="page-title">Jobs</h1>
+          <div className="page-actions job-list-actions">
+            <input
+              className="job-search"
+              placeholder="Search by title or id..."
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+              }}
+            />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All statuses</option>
+              <option value="open">Open</option>
+              <option value="on_hold">On Hold</option>
+              <option value="closed">Closed</option>
+            </select>
 
-          <button
-            className="create-btn"
-            onClick={() => navigate("/admin/jobs/create")}
-          >
-            + Create Job
-          </button>
+            <button
+              className="primary create-btn"
+              onClick={() => navigate("/admin/jobs/create")}
+            >
+              + Create Job
+            </button>
+          </div>
         </div>
-      </div>
 
-      {loading && <div className="loading">Loading...</div>}
+        {loading && <div className="loading">Loading...</div>}
 
-      <div className="job-grid">
-        {jobs.length === 0 && !loading ? (
-          <div className="empty">No jobs found</div>
-        ) : (
-          jobs.map((job) => (
-            <div key={job.jobId} className="job-grid-item">
-              {/* Pass application count to the card */}
-              <JobCard job={job} applicationCount={appCounts[job.jobId] || 0} />
-              <div className="job-item-actions">
-                <button onClick={() => navigate(`/admin/jobs/${job.jobId}`)}>
-                  View
-                </button>
-                <button
-                  onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="danger"
-                  onClick={() => handleDelete(job.jobId)}
-                >
-                  Delete
-                </button>
-                {/* New per-job applications button */}
-                <button
-                  className="applications-btn"
-                  onClick={() => navigate(`/admin/jobs/${job.jobId}/applications`)}
-                >
-                  Applications
-                </button>
+        <div className="job-grid">
+          {jobs.length === 0 && !loading ? (
+            <div className="empty">No jobs found</div>
+          ) : (
+            jobs.map((job) => (
+              <div key={job.jobId} className="job-grid-item">
+                {/* Pass application count to the card */}
+                <JobCard job={job} applicationCount={appCounts[job.jobId] || 0} />
+                <div className="job-item-actions">
+                  <button className="secondary btn-sm" onClick={() => navigate(`/admin/jobs/${job.jobId}`)}>
+                    View
+                  </button>
+                  <button
+                    className="secondary btn-sm"
+                    onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="danger btn-sm"
+                    onClick={() => handleDelete(job.jobId)}
+                  >
+                    Delete
+                  </button>
+                  {/* New per-job applications button */}
+                  <button
+                    className="primary btn-sm applications-btn"
+                    onClick={() => navigate(`/admin/jobs/${job.jobId}/applications`)}
+                  >
+                    Applications
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

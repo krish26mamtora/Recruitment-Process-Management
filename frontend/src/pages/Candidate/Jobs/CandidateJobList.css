@@ -1,4 +1,8 @@
-.candidate-job-list-page { padding: 2rem; background: var(--bg); min-height: 100vh; }
+.candidate-job-list-page {
+  padding: 2rem;
+  background: var(--bg);
+  min-height: 100vh;
+}
 
 .candidate-job-header {
   display: flex;
@@ -7,17 +11,31 @@
   margin-bottom: 1.5rem;
 }
 
-.candidate-job-header h1 { font-size: 1.8rem; }
+.candidate-job-header h1 {
+  font-size: 1.8rem;
+}
 
 .candidate-job-actions {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.job-search { padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--border); width: 250px; font-size: 0.95rem; }
+.job-search {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  width: 250px;
+  font-size: 0.95rem;
+}
 
-.candidate-job-actions select { padding: 0.6rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; }
+.candidate-job-actions select {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+}
 
 .candidate-job-grid {
   display: grid;
@@ -25,7 +43,14 @@
   gap: 1.2rem;
 }
 
-.candidate-job-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1rem; transition: transform 0.2s ease, box-shadow 0.2s ease; border: 1px solid var(--border); }
+.candidate-job-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border);
+}
 
 .candidate-job-card:hover {
   transform: translateY(-4px);
@@ -52,19 +77,28 @@
   transition: all 0.2s ease;
 }
 
-.view-btn { background: #eef2f7; color: var(--text-primary); border: 1px solid var(--border); }
-
-.view-btn:hover {
-  background: #dcdcdc;
+.view-btn {
+  background: #eef2f7;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
-.apply-btn { background: var(--primary); color: white; }
+.view-btn:hover {
+  background: var(--highlight);
+}
 
-.apply-btn:hover { background: var(--primary-hover); }
+.apply-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.apply-btn:hover {
+  background: var(--primary-hover);
+}
 
 .closed-btn {
-  background: #ccc;
-  color: #555;
+  background: var(--border-soft);
+  color: var(--text-secondary);
   cursor: not-allowed;
 }
 
@@ -72,6 +106,30 @@
 .empty {
   text-align: center;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .candidate-job-actions {
+    width: 100%;
+  }
+
+  .job-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .candidate-job-actions-btn {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .view-btn,
+  .apply-btn,
+  .closed-btn {
+    margin: 0;
+    width: 100%;
+  }
 }

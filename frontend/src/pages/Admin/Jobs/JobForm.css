@@ -1,34 +1,119 @@
 /* JobForm.css */
-.job-form-page { padding: 24px; background: var(--bg); min-height: 100vh; }
+.job-form-page {
+  padding: 0;
+  background: transparent;
+  min-height: unset;
+}
 
-.job-form-card { max-width: 900px; margin: 14px auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+.job-form-card {
+  max-width: 980px;
+  margin: 12px auto;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
 
-.job-form-card h2 { margin-top: 0; }
+.job-form-card h2 {
+  margin-top: 0;
+}
 
-.job-form { display: flex; flex-direction: column; gap: 12px; }
+.job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-label { margin-top: 6px; }
-.required { color: #c0392b; margin-left: 4px; font-weight: 700 }
+.job-form-page label {
+  margin-top: 6px;
+}
 
-input, textarea, select { }
+.job-form-page .required {
+  color: var(--danger);
+  margin-left: 4px;
+  font-weight: 700
+}
 
-.two-col { display: flex; gap: 12px; }
-.two-col > div { flex: 1; }
+.two-col {
+  display: flex;
+  gap: 12px;
+}
 
-.skills-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-.skill-pill { background: #f5f7fb; padding: 6px 10px; border-radius: 999px; display:flex; gap:8px; align-items:center; border: 1px solid var(--border); }
-.skill-pill button { border: none; background: transparent; cursor: pointer; color: var(--text-secondary); font-size: 14px; }
+.two-col>div {
+  flex: 1;
+}
 
-.add-skill { display:flex; gap:6px; align-items:center; }
-.add-skill input { min-width: 160px; }
-.add-skill button { padding: 8px 10px; border-radius: var(--radius-sm); border: none; background: var(--primary); color: #fff; cursor: pointer; }
-.add-skill button:hover { background: var(--primary-hover); }
+.skills-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-.form-actions { display:flex; gap: 10px; margin-top: 12px; }
-.form-actions button { padding: 10px 14px; border-radius: var(--radius-sm); border: none; cursor:pointer; }
-.form-actions .secondary { background: #eef2f7; border: 1px solid var(--border); }
+.skill-pill {
+  background: #f5f7fb;
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--border);
+}
 
-.loading { color: var(--text-secondary); margin: 8px 0; }
+.skill-pill button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.add-skill {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.add-skill input {
+  min-width: 160px;
+}
+
+.add-skill button {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+}
+
+.add-skill button:hover {
+  background: var(--primary-hover);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.form-actions button {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+}
+
+.form-actions .secondary {
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.loading {
+  color: var(--text-secondary);
+  margin: 8px 0;
+}
 
 .skills-row {
   display: flex;
@@ -49,7 +134,7 @@ input, textarea, select { }
 .skill-pill button {
   border: none;
   background: none;
-  color: #444;
+  color: var(--text-secondary);
   margin-left: 6px;
   cursor: pointer;
   font-weight: bold;
@@ -60,16 +145,42 @@ input, textarea, select { }
   width: 100%;
 }
 
-.suggestion-box { position: absolute; background: var(--surface); border: 1px solid var(--border); width: 100%; max-height: 180px; overflow-y: auto; z-index: 10; list-style: none; margin-top: 2px; padding: 0; box-shadow: var(--shadow-sm); }
+.suggestion-box {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 10;
+  list-style: none;
+  margin-top: 2px;
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+}
 
 .suggestion-box li {
   padding: 8px 10px;
   cursor: pointer;
 }
 
-.suggestion-box li:hover { background: #f0f6ff; }
+.suggestion-box li:hover {
+  background: var(--primary-soft);
+}
 
-@media (max-width: 720px) {
-  .two-col { flex-direction: column; }
-  .job-form-card { padding: 12px; margin: 8px; }
+@media (max-width: 1024px) {
+  .job-form-card {
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .two-col {
+    flex-direction: column;
+  }
+
+  .job-form-card {
+    padding: 12px;
+    margin: 8px;
+  }
 }

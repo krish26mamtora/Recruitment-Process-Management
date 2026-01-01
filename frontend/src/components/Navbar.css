@@ -1,12 +1,40 @@
-
 .navbar {
   position: sticky;
   top: 0;
   z-index: 50;
   background-color: var(--surface);
-  padding: 14px 24px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-soft);
   box-shadow: var(--shadow-sm);
+}
+
+.navbar-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+}
+
+.nav-brand-link {
+  color: var(--text-primary);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.nav-brand-link:hover {
+  background: var(--highlight);
+  text-decoration: none;
 }
 
 .nav-list {
@@ -15,22 +43,36 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
 }
 
-.nav-item a {
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 650;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
-.nav-item a:hover {
+.nav-link:hover {
   color: var(--primary);
-  background: var(--blue-50);
+  background: var(--highlight);
+  text-decoration: none;
+}
+
+.nav-link.active {
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-color: rgba(10, 78, 194, 0.18);
 }
 
 .logout-button {
@@ -38,7 +80,39 @@
   color: #fff;
   border: none;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
 }
-.logout-button:hover { background: var(--primary-hover); }
+
+.logout-button:hover {
+  background: var(--primary-hover);
+}
+
+@media (max-width: 1024px) {
+  .navbar-inner {
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-inner {
+    padding: 10px 16px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-list {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-brand-link {
+    padding: 6px 8px;
+  }
+
+  .nav-link {
+    padding: 8px 9px;
+  }
+}

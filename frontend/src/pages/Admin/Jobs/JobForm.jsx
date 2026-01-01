@@ -141,115 +141,119 @@ const JobForm = () => {
   };
 
   return (
-    <div className="job-form-page">
-      <div className="job-form-card">
-        <h2>{id ? "Edit Job" : "Create Job"}</h2>
-
-        {loading && <div className="loading">Loading...</div>}
-
-        <form className="job-form" onSubmit={handleSubmit}>
-          <label>
-            Title <span className="required">*</span>
-          </label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Description</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={6}
-          />
-
-          <div className="two-col">
-            <div>
-              <label>Minimum Experience (years)</label>
-              <input
-                name="minExperienceYears"
-                type="number"
-                min="0"
-                value={form.minExperienceYears}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label>Status</label>
-              <select name="status" value={form.status} onChange={handleChange}>
-                <option value="open">Open</option>
-                <option value="on_hold">On Hold</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
+    <div className="page job-form-page">
+      <div className="page-inner">
+        <div className="job-form-card">
+          <div className="page-header">
+            <h1 className="page-title">{id ? "Edit Job" : "Create Job"}</h1>
           </div>
 
-          {form.status === "closed" && (
-            <>
-              <label>Reason for closing</label>
-              <textarea
-                name="reasonClosed"
-                value={form.reasonClosed}
-                onChange={handleChange}
-              ></textarea>
-            </>
-          )}
+          {loading && <div className="loading">Loading...</div>}
 
-          <label>Assigned Recruiter (name)</label>
-          <input
-            name="assignedRecruiterName"
-            value={form.assignedRecruiterName || ""}
-            onChange={handleChange}
-            placeholder="Recruiter name (optional)"
-          />
+          <form className="job-form" onSubmit={handleSubmit}>
+            <label>
+              Title <span className="required">*</span>
+            </label>
+            <input
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              required
+            />
 
-          {/* 🔹 Skill Section with Autocomplete */}
-          <label>Skills</label>
-          <div className="skills-row">
-            {(form.skills || []).map((s) => (
-              <span key={s.skill_id} className="skill-pill">
-                {s.skill_name}
-                <button type="button" onClick={() => removeSkill(s.skill_id)}>
-                  &times;
-                </button>
-              </span>
-            ))}
+            <label>Description</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              rows={6}
+            />
 
-            <div className="add-skill">
-              <input
-                type="text"
-                value={skillQuery}
-                placeholder="Search skills..."
-                onChange={(e) => setSkillQuery(e.target.value)}
-              />
-              {skillQuery && filteredSkills.length > 0 && (
-                <ul className="suggestion-box">
-                  {filteredSkills.map((s) => (
-                    <li key={s.skill_id} onClick={() => addSkill(s)}>
-                      {s.skill_name}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <div className="two-col">
+              <div>
+                <label>Minimum Experience (years)</label>
+                <input
+                  name="minExperienceYears"
+                  type="number"
+                  min="0"
+                  value={form.minExperienceYears}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>Status</label>
+                <select name="status" value={form.status} onChange={handleChange}>
+                  <option value="open">Open</option>
+                  <option value="on_hold">On Hold</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="form-actions">
-            <button type="submit" disabled={loading}>
-              {id ? "Save Changes" : "Create Job"}
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => navigate("/admin/jobs")}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+            {form.status === "closed" && (
+              <>
+                <label>Reason for closing</label>
+                <textarea
+                  name="reasonClosed"
+                  value={form.reasonClosed}
+                  onChange={handleChange}
+                ></textarea>
+              </>
+            )}
+
+            <label>Assigned Recruiter (name)</label>
+            <input
+              name="assignedRecruiterName"
+              value={form.assignedRecruiterName || ""}
+              onChange={handleChange}
+              placeholder="Recruiter name (optional)"
+            />
+
+            {/* 🔹 Skill Section with Autocomplete */}
+            <label>Skills</label>
+            <div className="skills-row">
+              {(form.skills || []).map((s) => (
+                <span key={s.skill_id} className="skill-pill">
+                  {s.skill_name}
+                  <button type="button" onClick={() => removeSkill(s.skill_id)}>
+                    &times;
+                  </button>
+                </span>
+              ))}
+
+              <div className="add-skill">
+                <input
+                  type="text"
+                  value={skillQuery}
+                  placeholder="Search skills..."
+                  onChange={(e) => setSkillQuery(e.target.value)}
+                />
+                {skillQuery && filteredSkills.length > 0 && (
+                  <ul className="suggestion-box">
+                    {filteredSkills.map((s) => (
+                      <li key={s.skill_id} onClick={() => addSkill(s)}>
+                        {s.skill_name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button className="primary" type="submit" disabled={loading}>
+                {id ? "Save Changes" : "Create Job"}
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => navigate("/admin/jobs")}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

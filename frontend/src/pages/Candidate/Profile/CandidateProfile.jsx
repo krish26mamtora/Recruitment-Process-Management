@@ -337,70 +337,73 @@ const CandidateProfile = () => {
   if (!isSelf) {
     // Admin read-only view
     return (
-      <div className="candidate-profile-page admin-view">
-        <h1>Candidate Profile (User ID: {routeUserId})</h1>
-
-        <div className="profile-actions" style={{ marginBottom: '20px' }}>
-          <button className="primary" onClick={() => setIsJobModalOpen(true)}>Show Job Listings & Apply</button>
-        </div>
-
-        {isJobModalOpen && (
-          <JobApplicationModal
-            candidateId={routeUserId}
-            onClose={() => setIsJobModalOpen(false)}
-          />
-        )}
-        <div className="profile-grid">
-          <section>
-            <h2>1. Basic Personal Details</h2>
-            <div className="grid-3-compact">
-              <p><strong>Full Name:</strong> {fullName || '—'}</p>
-              <p><strong>Email:</strong> {email || '—'}</p>
-              <p><strong>Phone:</strong> {phone || '—'}</p>
-              <p><strong>City:</strong> {city || '—'}</p>
-              {profilePhotoUrl && <p><strong>Photo:</strong> <a href={profilePhotoUrl} target="_blank" rel="noopener noreferrer">View</a></p>}
+      <div className="page candidate-profile-page admin-view">
+        <div className="page-inner">
+          <div className="page-header">
+            <h1 className="page-title">Candidate Profile (User ID: {routeUserId})</h1>
+            <div className="page-actions profile-actions" style={{ marginBottom: '20px' }}>
+              <button className="primary" onClick={() => setIsJobModalOpen(true)}>Show Job Listings & Apply</button>
             </div>
-          </section>
+          </div>
 
-          <section>
-            <h2>2. Professional Summary</h2>
-            <p><strong>Current Title:</strong> {currentJobTitle || '—'}</p>
-            <p><strong>Summary:</strong> {summary || '—'}</p>
-          </section>
-
-          <section>
-            <h2>3. Technical Skills</h2>
-            <p>{skills || '—'}</p>
-          </section>
-
-          <section>
-            <h2>4. Work Experience</h2>
-            {experiences.map((exp, idx) => exp.companyName && (
-              <div key={idx} className="card compact">
-                <p><strong>{exp.jobTitle}</strong> at <strong>{exp.companyName}</strong> ({exp.startDate} - {exp.endDate})</p>
-                <p><em>Technologies:</em> {exp.technologies}</p>
+          {isJobModalOpen && (
+            <JobApplicationModal
+              candidateId={routeUserId}
+              onClose={() => setIsJobModalOpen(false)}
+            />
+          )}
+          <div className="profile-grid">
+            <section>
+              <h2>1. Basic Personal Details</h2>
+              <div className="grid-3-compact">
+                <p><strong>Full Name:</strong> {fullName || '—'}</p>
+                <p><strong>Email:</strong> {email || '—'}</p>
+                <p><strong>Phone:</strong> {phone || '—'}</p>
+                <p><strong>City:</strong> {city || '—'}</p>
+                {profilePhotoUrl && <p><strong>Photo:</strong> <a href={profilePhotoUrl} target="_blank" rel="noopener noreferrer">View</a></p>}
               </div>
-            ))}
-          </section>
+            </section>
 
-          <section>
-            <h2>5. Education</h2>
-            {education.map((ed, idx) => ed.degree && (
-              <div key={idx} className="card compact">
-                <p><strong>{ed.degree}, {ed.specialization}</strong> - {ed.college} ({ed.passingYear})</p>
+            <section>
+              <h2>2. Professional Summary</h2>
+              <p><strong>Current Title:</strong> {currentJobTitle || '—'}</p>
+              <p><strong>Summary:</strong> {summary || '—'}</p>
+            </section>
+
+            <section>
+              <h2>3. Technical Skills</h2>
+              <p>{skills || '—'}</p>
+            </section>
+
+            <section>
+              <h2>4. Work Experience</h2>
+              {experiences.map((exp, idx) => exp.companyName && (
+                <div key={idx} className="card compact">
+                  <p><strong>{exp.jobTitle}</strong> at <strong>{exp.companyName}</strong> ({exp.startDate} - {exp.endDate})</p>
+                  <p><em>Technologies:</em> {exp.technologies}</p>
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <h2>5. Education</h2>
+              {education.map((ed, idx) => ed.degree && (
+                <div key={idx} className="card compact">
+                  <p><strong>{ed.degree}, {ed.specialization}</strong> - {ed.college} ({ed.passingYear})</p>
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <h2>6. Attachments & Links</h2>
+              <div className="grid-3-compact">
+                {hasResume && <button className="primary" onClick={handleResumeDownload}>Download Resume</button>}
+                {linkedin && <p><strong>LinkedIn:</strong> <a href={linkedin} target="_blank" rel="noopener noreferrer">View</a></p>}
+                {github && <p><strong>GitHub:</strong> <a href={github} target="_blank" rel="noopener noreferrer">View</a></p>}
+                {portfolio && <p><strong>Portfolio:</strong> <a href={portfolio} target="_blank" rel="noopener noreferrer">View</a></p>}
               </div>
-            ))}
-          </section>
-
-          <section>
-            <h2>6. Attachments & Links</h2>
-            <div className="grid-3-compact">
-              {hasResume && <button className="primary" onClick={handleResumeDownload}>Download Resume</button>}
-              {linkedin && <p><strong>LinkedIn:</strong> <a href={linkedin} target="_blank" rel="noopener noreferrer">View</a></p>}
-              {github && <p><strong>GitHub:</strong> <a href={github} target="_blank" rel="noopener noreferrer">View</a></p>}
-              {portfolio && <p><strong>Portfolio:</strong> <a href={portfolio} target="_blank" rel="noopener noreferrer">View</a></p>}
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </div>
     );
@@ -408,424 +411,428 @@ const CandidateProfile = () => {
 
   //</div> Candidate's own editable view
   return (
-    <div className="candidate-profile-page">
-      <h1>
-        Candidate Profile {routeUserId ? `(User ID: ${routeUserId})` : ""}
-      </h1>
-      <div className="profile-controls">
-        {isSelf && (
-          <button className="primary" onClick={saveProfile}>
-            Save Profile
-          </button>
-        )}
-      </div>
-
-      <section>
-        <h2>1. Basic Personal Details</h2>
-        <div className="grid-2">
-          <input
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
-          <input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <input
-            placeholder="City / Location"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <input
-            placeholder="Profile Photo URL (optional)"
-            value={profilePhotoUrl}
-            onChange={(e) => setProfilePhotoUrl(e.target.value)}
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2>2. Professional Summary</h2>
-        <div className="grid-2">
-          <input
-            placeholder="Current Job Title"
-            value={currentJobTitle}
-            onChange={(e) => setCurrentJobTitle(e.target.value)}
-          />
-          <textarea
-            placeholder="Short Bio / Summary (optional)"
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2>3. Technical Skills</h2>
-        <div className="skills-container">
-          <div className="skills-input-wrapper">
-            <input
-              placeholder="Type a skill and press Enter"
-              value={skillInput}
-              onChange={handleSkillInputChange}
-              onKeyDown={handleSkillInputKeyDown}
-              onFocus={handleSkillInputFocus}
-              onBlur={handleSkillInputBlur}
-            />
-            {suggestions.length > 0 && (
-              <ul className="suggestions-list">
-                {suggestions.map(s => (
-                  <li key={s.skill_id} onClick={() => addSkill(s.skill_name)}>
-                    {s.skill_name}
-                  </li>
-                ))}
-              </ul>
+    <div className="page candidate-profile-page">
+      <div className="page-inner">
+        <div className="page-header">
+          <h1 className="page-title">
+            Candidate Profile {routeUserId ? `(User ID: ${routeUserId})` : ""}
+          </h1>
+          <div className="page-actions profile-controls">
+            {isSelf && (
+              <button className="primary" onClick={saveProfile}>
+                Save Profile
+              </button>
             )}
           </div>
-          <div className="skills-tags">
-            {skills.split(',').filter(s => s.trim()).map((skill, i) => (
-              <div key={i} className="skill-tag">
-                {skill}
-                <button onClick={() => removeSkill(skill)}>x</button>
-              </div>
-            ))}
-          </div>
         </div>
-      </section>
 
-      <section>
-        <h2>4. Work Experience</h2>
-        {experiences.map((exp, idx) => (
-          <div key={idx} className="card">
-            <div className="grid-2">
-              <input
-                placeholder="Company Name"
-                value={exp.companyName}
-                onChange={(e) =>
-                  updateItem(idx, setExperiences, "companyName", e.target.value)
-                }
-              />
-              <input
-                placeholder="Job Title"
-                value={exp.jobTitle}
-                onChange={(e) =>
-                  updateItem(idx, setExperiences, "jobTitle", e.target.value)
-                }
-              />
-              <input
-                placeholder="Start Date"
-                value={exp.startDate}
-                onChange={(e) =>
-                  updateItem(idx, setExperiences, "startDate", e.target.value)
-                }
-              />
-              <input
-                placeholder="End Date"
-                value={exp.endDate}
-                onChange={(e) =>
-                  updateItem(idx, setExperiences, "endDate", e.target.value)
-                }
-              />
-              <textarea
-                placeholder="Responsibilities"
-                value={exp.responsibilities}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setExperiences,
-                    "responsibilities",
-                    e.target.value
-                  )
-                }
-              />
-              <textarea
-                placeholder="Key Achievements"
-                value={exp.achievements}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setExperiences,
-                    "achievements",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                placeholder="Technologies Used"
-                value={exp.technologies}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setExperiences,
-                    "technologies",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-            <button
-              className="danger"
-              onClick={() => removeItem(idx, setExperiences)}
-            >
-              Remove Experience
-            </button>
-          </div>
-        ))}
-        <button onClick={() => addItem(setExperiences, emptyExperience)}>
-          + Add Experience
-        </button>
-      </section>
-
-      <section>
-        <h2>5. Education</h2>
-        {education.map((ed, idx) => (
-          <div key={idx} className="card">
-            <div className="grid-2">
-              <input
-                placeholder="Degree"
-                value={ed.degree}
-                onChange={(e) =>
-                  updateItem(idx, setEducation, "degree", e.target.value)
-                }
-              />
-              <input
-                placeholder="Specialization"
-                value={ed.specialization}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setEducation,
-                    "specialization",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                placeholder="College/University"
-                value={ed.college}
-                onChange={(e) =>
-                  updateItem(idx, setEducation, "college", e.target.value)
-                }
-              />
-              <input
-                placeholder="Passing Year"
-                value={ed.passingYear}
-                onChange={(e) =>
-                  updateItem(idx, setEducation, "passingYear", e.target.value)
-                }
-              />
-            </div>
-            <button
-              className="danger"
-              onClick={() => removeItem(idx, setEducation)}
-            >
-              Remove Education
-            </button>
-          </div>
-        ))}
-        <button onClick={() => addItem(setEducation, emptyEducation)}>
-          + Add Education
-        </button>
-      </section>
-
-      <section>
-        <h2>6. Certifications</h2>
-        {certifications.map((c, idx) => (
-          <div key={idx} className="card">
-            <div className="grid-2">
-              <input
-                placeholder="Certificate Name"
-                value={c.name}
-                onChange={(e) =>
-                  updateItem(idx, setCertifications, "name", e.target.value)
-                }
-              />
-              <input
-                placeholder="Issuing Organization"
-                value={c.organization}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setCertifications,
-                    "organization",
-                    e.target.value
-                  )
-                }
-              />
-              <input
-                placeholder="Validity"
-                value={c.validity}
-                onChange={(e) =>
-                  updateItem(idx, setCertifications, "validity", e.target.value)
-                }
-              />
-              <input
-                placeholder="Certificate File URL (optional)"
-                value={c.certificateUrl}
-                onChange={(e) =>
-                  updateItem(
-                    idx,
-                    setCertifications,
-                    "certificateUrl",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-            <button
-              className="danger"
-              onClick={() => removeItem(idx, setCertifications)}
-            >
-              Remove Certification
-            </button>
-          </div>
-        ))}
-        <button onClick={() => addItem(setCertifications, emptyCertification)}>
-          + Add Certification
-        </button>
-      </section>
-
-      <section>
-        <h2>7. Projects</h2>
-        {projects.map((p, idx) => (
-          <div key={idx} className="card">
-            <div className="grid-2">
-              <input
-                placeholder="Project Title"
-                value={p.title}
-                onChange={(e) =>
-                  updateItem(idx, setProjects, "title", e.target.value)
-                }
-              />
-              <textarea
-                placeholder="Description"
-                value={p.description}
-                onChange={(e) =>
-                  updateItem(idx, setProjects, "description", e.target.value)
-                }
-              />
-              <input
-                placeholder="Tech Stack"
-                value={p.techStack}
-                onChange={(e) =>
-                  updateItem(idx, setProjects, "techStack", e.target.value)
-                }
-              />
-              <input
-                placeholder="Role in project"
-                value={p.role}
-                onChange={(e) =>
-                  updateItem(idx, setProjects, "role", e.target.value)
-                }
-              />
-              <input
-                placeholder="Project link (GitHub/Live demo)"
-                value={p.link}
-                onChange={(e) =>
-                  updateItem(idx, setProjects, "link", e.target.value)
-                }
-              />
-            </div>
-            <button
-              className="danger"
-              onClick={() => removeItem(idx, setProjects)}
-            >
-              Remove Project
-            </button>
-          </div>
-        ))}
-        <button onClick={() => addItem(setProjects, emptyProject)}>
-          + Add Project
-        </button>
-      </section>
-
-      <section>
-        <h2>8. Resume</h2>
-        <div className="attachments-section">
-          <div className="upload-control">
+        <section>
+          <h2>1. Basic Personal Details</h2>
+          <div className="grid-2">
             <input
-              id="resume-upload-input"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={(e) => setResumeFile(e.target.files[0])}
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
-            <button
-              className="primary"
-              onClick={handleResumeUpload}
-              disabled={!resumeFile}
-            >
-              Upload Resume
-            </button>
+            <input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <input
+              placeholder="City / Location"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+            <input
+              placeholder="Profile Photo URL (optional)"
+              value={profilePhotoUrl}
+              onChange={(e) => setProfilePhotoUrl(e.target.value)}
+            />
           </div>
-          {hasResume && (
-            <div className="download-control">
-              <p>A resume is already uploaded.</p>
-              <button className="secondary" onClick={handleResumeDownload}>
-                Download Resume
+        </section>
+
+        <section>
+          <h2>2. Professional Summary</h2>
+          <div className="grid-2">
+            <input
+              placeholder="Current Job Title"
+              value={currentJobTitle}
+              onChange={(e) => setCurrentJobTitle(e.target.value)}
+            />
+            <textarea
+              placeholder="Short Bio / Summary (optional)"
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+            />
+          </div>
+        </section>
+
+        <section>
+          <h2>3. Technical Skills</h2>
+          <div className="skills-container">
+            <div className="skills-input-wrapper">
+              <input
+                placeholder="Type a skill and press Enter"
+                value={skillInput}
+                onChange={handleSkillInputChange}
+                onKeyDown={handleSkillInputKeyDown}
+                onFocus={handleSkillInputFocus}
+                onBlur={handleSkillInputBlur}
+              />
+              {suggestions.length > 0 && (
+                <ul className="suggestions-list">
+                  {suggestions.map(s => (
+                    <li key={s.skill_id} onClick={() => addSkill(s.skill_name)}>
+                      {s.skill_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="skills-tags">
+              {skills.split(',').filter(s => s.trim()).map((skill, i) => (
+                <div key={i} className="skill-tag">
+                  {skill}
+                  <button onClick={() => removeSkill(skill)}>x</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>4. Work Experience</h2>
+          {experiences.map((exp, idx) => (
+            <div key={idx} className="card">
+              <div className="grid-2">
+                <input
+                  placeholder="Company Name"
+                  value={exp.companyName}
+                  onChange={(e) =>
+                    updateItem(idx, setExperiences, "companyName", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Job Title"
+                  value={exp.jobTitle}
+                  onChange={(e) =>
+                    updateItem(idx, setExperiences, "jobTitle", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Start Date"
+                  value={exp.startDate}
+                  onChange={(e) =>
+                    updateItem(idx, setExperiences, "startDate", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="End Date"
+                  value={exp.endDate}
+                  onChange={(e) =>
+                    updateItem(idx, setExperiences, "endDate", e.target.value)
+                  }
+                />
+                <textarea
+                  placeholder="Responsibilities"
+                  value={exp.responsibilities}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setExperiences,
+                      "responsibilities",
+                      e.target.value
+                    )
+                  }
+                />
+                <textarea
+                  placeholder="Key Achievements"
+                  value={exp.achievements}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setExperiences,
+                      "achievements",
+                      e.target.value
+                    )
+                  }
+                />
+                <input
+                  placeholder="Technologies Used"
+                  value={exp.technologies}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setExperiences,
+                      "technologies",
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
+              <button
+                className="danger"
+                onClick={() => removeItem(idx, setExperiences)}
+              >
+                Remove Experience
               </button>
             </div>
-          )}
-        </div>
-        <div className="grid-2">
-          <input
-            placeholder="Cover Letter URL (optional)"
-            value={coverLetterUrl}
-            onChange={(e) => setCoverLetterUrl(e.target.value)}
-          />
-        </div>
-      </section>
+          ))}
+          <button onClick={() => addItem(setExperiences, emptyExperience)}>
+            + Add Experience
+          </button>
+        </section>
 
-      <section>
-        <h2>9. Additional Preferred Fields</h2>
-        <div className="grid-2">
-          <input
-            placeholder="LinkedIn Profile"
-            value={linkedin}
-            onChange={(e) => setLinkedin(e.target.value)}
-          />
-          <input
-            placeholder="GitHub Profile"
-            value={github}
-            onChange={(e) => setGithub(e.target.value)}
-          />
-          <input
-            placeholder="Portfolio Website"
-            value={portfolio}
-            onChange={(e) => setPortfolio(e.target.value)}
-          />
-          <input
-            placeholder="Expected Salary"
-            value={expectedSalary}
-            onChange={(e) => setExpectedSalary(e.target.value)}
-          />
-          <input
-            placeholder="Notice Period"
-            value={noticePeriod}
-            onChange={(e) => setNoticePeriod(e.target.value)}
-          />
-          <input
-            placeholder="Preferred Job Location"
-            value={preferredJobLocation}
-            onChange={(e) => setPreferredJobLocation(e.target.value)}
-          />
-          <select
-            value={jobTypePreference}
-            onChange={(e) => setJobTypePreference(e.target.value)}
-          >
-            <option value="">Job Type Preference</option>
-            <option value="Remote">Remote</option>
-            <option value="Hybrid">Hybrid</option>
-            <option value="Onsite">Onsite</option>
-          </select>
-        </div>
-      </section>
+        <section>
+          <h2>5. Education</h2>
+          {education.map((ed, idx) => (
+            <div key={idx} className="card">
+              <div className="grid-2">
+                <input
+                  placeholder="Degree"
+                  value={ed.degree}
+                  onChange={(e) =>
+                    updateItem(idx, setEducation, "degree", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Specialization"
+                  value={ed.specialization}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setEducation,
+                      "specialization",
+                      e.target.value
+                    )
+                  }
+                />
+                <input
+                  placeholder="College/University"
+                  value={ed.college}
+                  onChange={(e) =>
+                    updateItem(idx, setEducation, "college", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Passing Year"
+                  value={ed.passingYear}
+                  onChange={(e) =>
+                    updateItem(idx, setEducation, "passingYear", e.target.value)
+                  }
+                />
+              </div>
+              <button
+                className="danger"
+                onClick={() => removeItem(idx, setEducation)}
+              >
+                Remove Education
+              </button>
+            </div>
+          ))}
+          <button onClick={() => addItem(setEducation, emptyEducation)}>
+            + Add Education
+          </button>
+        </section>
+
+        <section>
+          <h2>6. Certifications</h2>
+          {certifications.map((c, idx) => (
+            <div key={idx} className="card">
+              <div className="grid-2">
+                <input
+                  placeholder="Certificate Name"
+                  value={c.name}
+                  onChange={(e) =>
+                    updateItem(idx, setCertifications, "name", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Issuing Organization"
+                  value={c.organization}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setCertifications,
+                      "organization",
+                      e.target.value
+                    )
+                  }
+                />
+                <input
+                  placeholder="Validity"
+                  value={c.validity}
+                  onChange={(e) =>
+                    updateItem(idx, setCertifications, "validity", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Certificate File URL (optional)"
+                  value={c.certificateUrl}
+                  onChange={(e) =>
+                    updateItem(
+                      idx,
+                      setCertifications,
+                      "certificateUrl",
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
+              <button
+                className="danger"
+                onClick={() => removeItem(idx, setCertifications)}
+              >
+                Remove Certification
+              </button>
+            </div>
+          ))}
+          <button onClick={() => addItem(setCertifications, emptyCertification)}>
+            + Add Certification
+          </button>
+        </section>
+
+        <section>
+          <h2>7. Projects</h2>
+          {projects.map((p, idx) => (
+            <div key={idx} className="card">
+              <div className="grid-2">
+                <input
+                  placeholder="Project Title"
+                  value={p.title}
+                  onChange={(e) =>
+                    updateItem(idx, setProjects, "title", e.target.value)
+                  }
+                />
+                <textarea
+                  placeholder="Description"
+                  value={p.description}
+                  onChange={(e) =>
+                    updateItem(idx, setProjects, "description", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Tech Stack"
+                  value={p.techStack}
+                  onChange={(e) =>
+                    updateItem(idx, setProjects, "techStack", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Role in project"
+                  value={p.role}
+                  onChange={(e) =>
+                    updateItem(idx, setProjects, "role", e.target.value)
+                  }
+                />
+                <input
+                  placeholder="Project link (GitHub/Live demo)"
+                  value={p.link}
+                  onChange={(e) =>
+                    updateItem(idx, setProjects, "link", e.target.value)
+                  }
+                />
+              </div>
+              <button
+                className="danger"
+                onClick={() => removeItem(idx, setProjects)}
+              >
+                Remove Project
+              </button>
+            </div>
+          ))}
+          <button onClick={() => addItem(setProjects, emptyProject)}>
+            + Add Project
+          </button>
+        </section>
+
+        <section>
+          <h2>8. Resume</h2>
+          <div className="attachments-section">
+            <div className="upload-control">
+              <input
+                id="resume-upload-input"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setResumeFile(e.target.files[0])}
+              />
+              <button
+                className="primary"
+                onClick={handleResumeUpload}
+                disabled={!resumeFile}
+              >
+                Upload Resume
+              </button>
+            </div>
+            {hasResume && (
+              <div className="download-control">
+                <p>A resume is already uploaded.</p>
+                <button className="secondary" onClick={handleResumeDownload}>
+                  Download Resume
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="grid-2">
+            <input
+              placeholder="Cover Letter URL (optional)"
+              value={coverLetterUrl}
+              onChange={(e) => setCoverLetterUrl(e.target.value)}
+            />
+          </div>
+        </section>
+
+        <section>
+          <h2>9. Additional Preferred Fields</h2>
+          <div className="grid-2">
+            <input
+              placeholder="LinkedIn Profile"
+              value={linkedin}
+              onChange={(e) => setLinkedin(e.target.value)}
+            />
+            <input
+              placeholder="GitHub Profile"
+              value={github}
+              onChange={(e) => setGithub(e.target.value)}
+            />
+            <input
+              placeholder="Portfolio Website"
+              value={portfolio}
+              onChange={(e) => setPortfolio(e.target.value)}
+            />
+            <input
+              placeholder="Expected Salary"
+              value={expectedSalary}
+              onChange={(e) => setExpectedSalary(e.target.value)}
+            />
+            <input
+              placeholder="Notice Period"
+              value={noticePeriod}
+              onChange={(e) => setNoticePeriod(e.target.value)}
+            />
+            <input
+              placeholder="Preferred Job Location"
+              value={preferredJobLocation}
+              onChange={(e) => setPreferredJobLocation(e.target.value)}
+            />
+            <select
+              value={jobTypePreference}
+              onChange={(e) => setJobTypePreference(e.target.value)}
+            >
+              <option value="">Job Type Preference</option>
+              <option value="Remote">Remote</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Onsite">Onsite</option>
+            </select>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };
