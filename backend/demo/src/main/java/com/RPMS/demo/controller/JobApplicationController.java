@@ -53,6 +53,9 @@ public class JobApplicationController {
             dto.id = app.getId();
             dto.jobId = app.getJobIdFk() != null ? app.getJobIdFk()
                     : (app.getJob() != null ? app.getJob().getJobId() : null);
+            dto.jobTitle = (app.getJob() != null && app.getJob().getTitle() != null)
+                    ? app.getJob().getTitle()
+                    : null;
             dto.candidateId = app.getCandidateIdFk() != null ? app.getCandidateIdFk()
                     : (app.getCandidate() != null ? app.getCandidate().getUserId() : null);
             dto.fullName = app.getFullName();

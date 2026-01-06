@@ -4,6 +4,7 @@ import "./JobApplications.css";
 const JobApplications = ({ jobId }) => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [jobTitle, setJobTitle] = useState("");
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
@@ -40,12 +41,28 @@ const JobApplications = ({ jobId }) => {
     // eslint-disable-next-line
   }, [jobId]);
 
+  useEffect(() => {
+    const loadJobTitle = async () => {
+      if (!jobId) {
+        setJobTitle("");
+        return;
+      }
+      try {
+        const res = await fetch(`http://localhost:8081/api/jobs/${jobId}`);
+        if (!res.ok) return;
+        const job = await res.json();
+        setJobTitle(job?.title || "");
+      } catch {}
+    };
+    loadJobTitle();
+  }, [jobId]);
+
   return (
     <div className="page job-applications-page">
       <div className="page-inner">
         <div className="page-header">
           <h1 className="page-title">
-            {jobId ? `Applications for Job #${jobId}` : "Candidate Job Applications"}
+            {jobId ? (jobTitle ? `Applications for ${jobTitle}` : `Applications for Job #${jobId}`) : "Candidate Job Applications"}
           </h1>
         </div>
 
@@ -82,7 +99,7 @@ const JobApplications = ({ jobId }) => {
                     <td>{index + 1}</td>
                     <td>{app.fullName || "—"}</td>
                     <td>{app.email || "—"}</td>
-                    <td>{app.jobTitle || (app.jobId ? `Job #${app.jobId}` : "—")}</td>
+                    <td>{app.jobTitle || jobTitle || (app.jobId ? `Job #${app.jobId}` : "—")}</td>
                     <td>{app.gender || "—"}</td>
                     <td>{app.collegeName || "—"}</td>
                     <td>{app.degree || "—"}</td>
