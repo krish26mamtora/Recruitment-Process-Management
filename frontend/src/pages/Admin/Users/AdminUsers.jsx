@@ -26,6 +26,8 @@ const AdminUsers = () => {
   const [editedRoles, setEditedRoles] = useState({}); // { [userId]: [roles] }
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [resumeUploading, setResumeUploading] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -255,6 +257,50 @@ const AdminUsers = () => {
             disabled={uploading}
           >
             {uploading ? "Uploading..." : "Upload & Create Accounts"}
+          </button>
+        </div>
+      </section>
+
+      <section className="create-user-section">
+        <h2>Parse Candidate Resume</h2>
+        <p className="note">Upload a single resume (PDF/DOC/DOCX/TXT). The parsed details will be printed in backend logs.</p>
+        <div className="role-checkboxes">
+          <input
+            id="resume-upload-input"
+            type="file"
+            accept=".pdf,.doc,.docx,.txt"
+            onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+          />
+          <button
+            className="primary"
+            onClick={async () => {
+              if (!resumeFile) {
+                toast.warn("Please select a resume file first.");
+                return;
+              }
+              setResumeUploading(true);
+              try {
+                const formData = new FormData();
+                formData.append("file", resumeFile);
+                const res = await fetch("http://localhost:8081/api/resume/parse", {
+                  method: "POST",
+                  body: formData,
+                });
+                if (!res.ok) throw new Error(await res.text());
+                toast.success("Resume parsed. Check backend logs for extracted data.");
+              } catch (err) {
+                console.error(err);
+                toast.error("Failed to parse resume");
+              } finally {
+                setResumeUploading(false);
+                setResumeFile(null);
+                const el = document.getElementById("resume-upload-input");
+                if (el) el.value = "";
+              }
+            }}
+            disabled={resumeUploading}
+          >
+            {resumeUploading ? "Parsing..." : "Upload Resume & Parse"}
           </button>
         </div>
       </section>
