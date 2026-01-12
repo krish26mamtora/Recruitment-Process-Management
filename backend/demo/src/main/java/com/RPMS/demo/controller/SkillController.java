@@ -14,25 +14,21 @@ public class SkillController {
     @Autowired
     private SkillService skillService;
 
-    // ✅ GET: fetch all skills (mapped to /all)
     @GetMapping
     public List<Skill> getAllSkills() {
         return skillService.getAllSkills();
     }
 
-    // ✅ POST: add a new skill
     @PostMapping
     public Skill addSkill(@RequestBody Skill skill) {
         return skillService.addSkill(skill);
     }
 
-    // ✅ GET: fetch skill by ID
     @GetMapping("/{id}")
     public Skill getSkillById(@PathVariable Integer id) {
         return skillService.getSkillById(id);
     }
 
-    // ✅ DELETE: delete skill by ID
     @DeleteMapping("/{id}")
     public void deleteSkill(@PathVariable Integer id) {
         skillService.deleteSkill(id);

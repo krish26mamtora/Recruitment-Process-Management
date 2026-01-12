@@ -17,7 +17,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
-    @JsonIgnoreProperties("roles") // ✅ Prevents User → Role → User recursion
+    @JsonIgnoreProperties("roles") // issue - later
     private Set<User> users = new HashSet<>();
 
     public Long getRoleId() {

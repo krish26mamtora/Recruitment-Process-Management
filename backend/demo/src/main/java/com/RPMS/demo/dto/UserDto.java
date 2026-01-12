@@ -16,8 +16,6 @@ public class UserDto {
     private Set<Role> roles;
     private String resumeFileName;
 
-    // Getters and setters
-
     public Long getUserId() {
         return userId;
     }

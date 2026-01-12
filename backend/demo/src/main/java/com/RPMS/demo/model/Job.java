@@ -53,7 +53,6 @@ public class Job {
         this.jobApplications = jobApplications;
     }
 
-    // Getters and Setters
     public Integer getJobId() {
         return jobId;
     }

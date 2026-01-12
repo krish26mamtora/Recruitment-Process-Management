@@ -31,7 +31,7 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIgnoreProperties("users") // ✅ Prevents Role → User → Role recursion
+    @JsonIgnoreProperties("users") // role
     private Set<Role> roles = new HashSet<>();
 
     public enum Status {

@@ -10,43 +10,41 @@ public class UserProfile {
     @Id
     private Long userId; // Link to users.userId
 
-    // 1. Basic Personal Details
+    // Basic Personal Details
     private String fullName;
     private String email;
     private String phone;
     private String city;
     private String profilePhotoUrl; // optional URL
 
-    // 2. Professional Summary
+    // Ps
     private String currentJobTitle;
     @Column(columnDefinition = "TEXT")
     private String summary; // optional
 
-    // 3. Technical Skills (store as comma-separated tags)
+    // for skills in text ,,,,,,, a , b , c format
     @Column(columnDefinition = "TEXT")
     private String skills;
 
-    // 4. Work Experience (JSON array as TEXT)
+    // exp
     @Lob
     @Column(columnDefinition = "TEXT")
     private String experiencesJson;
 
-    // 5. Education (JSON array as TEXT)
     @Lob
     @Column(columnDefinition = "TEXT")
     private String educationJson;
 
-    // 6. Certifications (JSON array as TEXT)
+    // watch ---later
     @Lob
     @Column(columnDefinition = "TEXT")
     private String certificationsJson;
 
-    // 7. Projects (JSON array as TEXT)
     @Lob
     @Column(columnDefinition = "TEXT")
     private String projectsJson;
 
-    // 8. Attachments (resumeUrl, coverLetterUrl)
+    // 8. Attachments
     @Lob
     @Column(columnDefinition = "TEXT")
     private String attachmentsJson;
@@ -59,14 +57,13 @@ public class UserProfile {
     private String resumeFileName;
     private String resumeFileType;
 
-    // 9. Additional Preferred Fields
     private String linkedin;
     private String github;
     private String portfolio;
-    private Integer expectedSalary; // per month or per annum
+    private Integer expectedSalary;
     private String noticePeriod;
     private String preferredJobLocation;
-    private String jobTypePreference; // Remote / Hybrid / Onsite
+    private String jobTypePreference;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -76,7 +73,6 @@ public class UserProfile {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getUserId() {
         return userId;
     }

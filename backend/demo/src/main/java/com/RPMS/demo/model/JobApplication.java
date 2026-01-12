@@ -8,14 +8,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "job_applications")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // ✅ Fixes proxy serialization
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // proxy serialization
 public class JobApplication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // --- Relationships ---
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -36,7 +35,6 @@ public class JobApplication {
     @JsonIgnore
     private Long candidateIdFk;
 
-    // --- Candidate Info ---
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
@@ -68,14 +66,13 @@ public class JobApplication {
     @Column(name = "cpi")
     private Double cpi;
 
-    // --- Experience / Motivation ---
     @Column(name = "experience", columnDefinition = "TEXT")
     private String experience;
 
     @Column(name = "why_join", columnDefinition = "TEXT")
     private String whyJoin;
 
-    // --- Resume Fields ---
+    // Resume Fields
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @JsonIgnore

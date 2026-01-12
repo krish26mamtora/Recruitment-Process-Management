@@ -50,7 +50,7 @@ public class JobApplicationService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    // ✅ Apply for a Job
+    // apply
     public JobApplication applyForJob(Integer jobId, Long candidateId,
             String fullName, String email, String phone, String gender,
             Integer age, String address, String collegeName, String degree,
@@ -92,25 +92,24 @@ public class JobApplicationService {
         return saved;
     }
 
-    // ✅ Fetch All Job Applications
+    // get all job
     @Transactional(readOnly = true)
     public List<JobApplication> getAllApplications() {
         return jobApplicationRepository.findAll();
     }
 
-    // ✅ Fetch job applications by Job ID
+    // fetch job by job id
     @Transactional(readOnly = true)
     public List<JobApplication> getApplicationsByJobId(Integer jobId) {
         return jobApplicationRepository.findByJobIdFk(jobId);
     }
 
-    // ✅ Fetch applications by Candidate ID
+    // fetch job by job id
     @Transactional(readOnly = true)
     public List<JobApplication> getApplicationsByCandidateId(Long candidateId) {
         return jobApplicationRepository.findByCandidate_UserId(candidateId);
     }
 
-    // ✅ Fetch by ID (use Integer type)
     public JobApplication getApplicationById(Long id) {
         return jobApplicationRepository.findById(id.intValue())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
@@ -179,11 +178,9 @@ public class JobApplicationService {
         app.setRemarks(details);
         JobApplication saved = jobApplicationRepository.save(app);
 
-        // Save interviewer emails to database
         if (interviewerEmails != null && !interviewerEmails.isEmpty()) {
-            // Clear existing interviewers for this application
             interviewPanelRepository.deleteByApplicationId(saved.getId());
-            // Save new interviewers
+
             for (String email : interviewerEmails) {
                 if (email != null && !email.isBlank()) {
                     interviewPanelRepository.save(new InterviewPanel(saved.getId(), email));
@@ -240,7 +237,7 @@ public class JobApplicationService {
                 String meetLink = extractFromRemarks(app.getRemarks(), "Meet:");
                 String message = extractFromRemarks(app.getRemarks(), "Notes:");
 
-                // Get interviewer emails from database
+                // Get interviewer emails from db
                 List<String> interviewerEmails = interviewPanelRepository.findByApplicationId(app.getId())
                         .stream()
                         .map(InterviewPanel::getInterviewerEmail)
@@ -267,7 +264,6 @@ public class JobApplicationService {
     }
 
     private String extractRound(String status) {
-        // Extract round from status like "Interview - Technical scheduled"
         if (status == null)
             return "";
         Pattern pattern = Pattern.compile("Interview - (.+?) scheduled");

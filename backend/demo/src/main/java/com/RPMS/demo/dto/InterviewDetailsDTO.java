@@ -34,7 +34,6 @@ public class InterviewDetailsDTO {
         this.interviewerEmails = interviewerEmails;
     }
 
-    // Getters and Setters
     public Long getApplicationId() {
         return applicationId;
     }

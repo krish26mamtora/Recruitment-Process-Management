@@ -18,7 +18,11 @@ const AdminUsers = () => {
   const [error, setError] = useState("");
 
   // Create form state
-  const [newUser, setNewUser] = useState({ username: "", fullName: "", email: "" });
+  const [newUser, setNewUser] = useState({
+    username: "",
+    fullName: "",
+    email: "",
+  });
   const [newUserRoles, setNewUserRoles] = useState([]);
   const [creating, setCreating] = useState(false);
 
@@ -64,7 +68,11 @@ const AdminUsers = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!newUser.username.trim() || !newUser.fullName.trim() || !newUser.email.trim()) {
+    if (
+      !newUser.username.trim() ||
+      !newUser.fullName.trim() ||
+      !newUser.email.trim()
+    ) {
       toast.warn("Please fill username, full name and email");
       return;
     }
@@ -113,11 +121,14 @@ const AdminUsers = () => {
   const saveRoles = async (userId) => {
     try {
       const roles = editedRoles[userId] ?? [];
-      const res = await fetch(`http://localhost:8081/api/users/${userId}/roles`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roles }),
-      });
+      const res = await fetch(
+        `http://localhost:8081/api/users/${userId}/roles`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ roles }),
+        }
+      );
       if (!res.ok) throw new Error(await res.text());
       toast.success("Roles updated");
       setEditedRoles((prev) => ({ ...prev, [userId]: undefined }));
@@ -186,18 +197,23 @@ const AdminUsers = () => {
         }
 
         if (failedEntries.length > 0) {
-          const errorDetails = failedEntries.map(f => `${f.email}`).join(', ');
-          toast.error(`Failed to create ${failedEntries.length} users: ${errorDetails}.`);
+          const errorDetails = failedEntries
+            .map((f) => `${f.email}`)
+            .join(", ");
+          toast.error(
+            `Failed to create ${failedEntries.length} users: ${errorDetails}.`
+          );
         }
-
       } catch (err) {
         console.error("Error processing file:", err);
-        toast.error(err.message || "An error occurred while processing the file.");
+        toast.error(
+          err.message || "An error occurred while processing the file."
+        );
       } finally {
         setUploading(false);
         setSelectedFile(null);
-        if (document.getElementById('bulk-upload-input')) {
-          document.getElementById('bulk-upload-input').value = '';
+        if (document.getElementById("bulk-upload-input")) {
+          document.getElementById("bulk-upload-input").value = "";
         }
       }
     };
@@ -209,7 +225,6 @@ const AdminUsers = () => {
 
     reader.readAsArrayBuffer(selectedFile);
   };
-
 
   const initEditedRolesIfNeeded = (u) => {
     if (editedRoles[u.userId] === undefined) {
@@ -241,70 +256,82 @@ const AdminUsers = () => {
     <div className="admin-users-page">
       <h1>Manage Users</h1>
 
-      <section className="create-user-section">
-        <h2>Bulk Upload Candidates</h2>
-        <p className="note">Upload an Excel file with columns: Name, Email, Collage, Gender. Initial password will be set to the email.</p>
-        <div className="role-checkboxes">
-          <input
-            id="bulk-upload-input"
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={handleFileChange}
-          />
-          <button
-            className="primary"
-            onClick={handleBulkUpload}
-            disabled={uploading}
-          >
-            {uploading ? "Uploading..." : "Upload & Create Accounts"}
-          </button>
-        </div>
-      </section>
+      <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+        <section className="create-user-section">
+          <h2>Bulk Upload Candidates</h2>
+          <p className="note">
+            Upload an Excel file with columns: Name, Email, Collage, Gender.
+            Initial password will be set to the email.
+          </p>
+          <div className="role-checkboxes">
+            <input
+              id="bulk-upload-input"
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleFileChange}
+            />
+            <button
+              className="primary"
+              onClick={handleBulkUpload}
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Upload & Create Accounts"}
+            </button>
+          </div>
+        </section>
 
-      <section className="create-user-section">
-        <h2>Parse Candidate Resume</h2>
-        <p className="note">Upload a single resume (PDF/DOC/DOCX/TXT). The parsed details will be printed in backend logs.</p>
-        <div className="role-checkboxes">
-          <input
-            id="resume-upload-input"
-            type="file"
-            accept=".pdf,.doc,.docx,.txt"
-            onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-          />
-          <button
-            className="primary"
-            onClick={async () => {
-              if (!resumeFile) {
-                toast.warn("Please select a resume file first.");
-                return;
-              }
-              setResumeUploading(true);
-              try {
-                const formData = new FormData();
-                formData.append("file", resumeFile);
-                const res = await fetch("http://localhost:8081/api/resume/parse", {
-                  method: "POST",
-                  body: formData,
-                });
-                if (!res.ok) throw new Error(await res.text());
-                toast.success("Resume parsed. Check backend logs for extracted data.");
-              } catch (err) {
-                console.error(err);
-                toast.error("Failed to parse resume");
-              } finally {
-                setResumeUploading(false);
-                setResumeFile(null);
-                const el = document.getElementById("resume-upload-input");
-                if (el) el.value = "";
-              }
-            }}
-            disabled={resumeUploading}
-          >
-            {resumeUploading ? "Parsing..." : "Upload Resume & Parse"}
-          </button>
-        </div>
-      </section>
-
+        <section className="create-user-section">
+          <h2>Parse Candidate Resume</h2>
+          <p className="note">
+            Upload a single resume (PDF/DOC/DOCX/TXT). The parsed details will
+            be printed in backend logs.
+          </p>
+          <div className="role-checkboxes">
+            <input
+              id="resume-upload-input"
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+            />
+            <button
+              className="primary"
+              onClick={async () => {
+                if (!resumeFile) {
+                  toast.warn("Please select a resume file first.");
+                  return;
+                }
+                setResumeUploading(true);
+                try {
+                  const formData = new FormData();
+                  formData.append("file", resumeFile);
+                  const res = await fetch(
+                    "http://localhost:8081/api/resume/parse",
+                    {
+                      method: "POST",
+                      body: formData,
+                    }
+                  );
+                  if (!res.ok) throw new Error(await res.text());
+                  toast.success(
+                    "Resume parsed. Check backend logs for extracted data."
+                  );
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Failed to parse resume");
+                } finally {
+                  setResumeUploading(false);
+                  setResumeFile(null);
+                  const el = document.getElementById("resume-upload-input");
+                  if (el) el.value = "";
+                }
+              }}
+              disabled={resumeUploading}
+            >
+              {resumeUploading ? "Parsing..." : "Upload Resume & Parse"}
+            </button>
+          </div>
+        </section>
+      </div>
       <section className="create-user-section">
         <h2>Create New User</h2>
         <p className="note">Initial password will be same as email ID.</p>
@@ -313,18 +340,24 @@ const AdminUsers = () => {
             <input
               placeholder="Username"
               value={newUser.username}
-              onChange={(e) => setNewUser((s) => ({ ...s, username: e.target.value }))}
+              onChange={(e) =>
+                setNewUser((s) => ({ ...s, username: e.target.value }))
+              }
             />
             <input
               placeholder="Full Name"
               value={newUser.fullName}
-              onChange={(e) => setNewUser((s) => ({ ...s, fullName: e.target.value }))}
+              onChange={(e) =>
+                setNewUser((s) => ({ ...s, fullName: e.target.value }))
+              }
             />
             <input
               placeholder="Email"
               type="email"
               value={newUser.email}
-              onChange={(e) => setNewUser((s) => ({ ...s, email: e.target.value }))}
+              onChange={(e) =>
+                setNewUser((s) => ({ ...s, email: e.target.value }))
+              }
             />
           </div>
           <div className="role-checkboxes">
@@ -333,13 +366,17 @@ const AdminUsers = () => {
                 <input
                   type="checkbox"
                   checked={newUserRoles.includes(opt.value)}
-                  onChange={() => setNewUserRoles((roles) => toggleRoleIn(roles, opt.value))}
+                  onChange={() =>
+                    setNewUserRoles((roles) => toggleRoleIn(roles, opt.value))
+                  }
                 />
                 {opt.label}
               </label>
             ))}
           </div>
-          <button type="submit" className="primary" disabled={creating}>{creating ? "Creating..." : "Create User"}</button>
+          <button type="submit" className="primary" disabled={creating}>
+            {creating ? "Creating..." : "Create User"}
+          </button>
         </form>
       </section>
 
@@ -365,7 +402,10 @@ const AdminUsers = () => {
             </thead>
             <tbody>
               {usersWithMemo.map((u) => (
-                <tr key={u.userId} onMouseEnter={() => initEditedRolesIfNeeded(u)}>
+                <tr
+                  key={u.userId}
+                  onMouseEnter={() => initEditedRolesIfNeeded(u)}
+                >
                   <td>{u.userId}</td>
                   <td>{u.username}</td>
                   <td>{u.fullName}</td>
@@ -377,8 +417,18 @@ const AdminUsers = () => {
                     {renderRoleCheckboxes(u.userId)}
                   </td>
                   <td className="actions">
-                    <Link className="secondary" to={`/admin/users/${u.userId}/profile`}>View Profile</Link>
-                    <button className="primary" onClick={() => saveRoles(u.userId)}>Save Roles</button>
+                    <Link
+                      className="secondary"
+                      to={`/admin/users/${u.userId}/profile`}
+                    >
+                      View Profile
+                    </Link>
+                    <button
+                      className="primary"
+                      onClick={() => saveRoles(u.userId)}
+                    >
+                      Save Roles
+                    </button>
                   </td>
                 </tr>
               ))}

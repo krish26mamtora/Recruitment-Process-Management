@@ -27,7 +27,7 @@ const CandidateJobList = () => {
     load();
   }, [q, statusFilter]);
 
-  // ✅ When Apply button clicked, open a new tab with job application form
+  //  open job application form
   const handleApply = (jobId) => {
     if (!window.confirm("Do you want to apply for this job?")) return;
     window.open(`/candidate/jobs/apply/${jobId}`, "_blank");

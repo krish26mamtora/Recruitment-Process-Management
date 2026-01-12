@@ -24,7 +24,6 @@ public class JobApplicationController {
     @Autowired
     private JobApplicationService jobApplicationService;
 
-    // ✅ Lightweight DTO to avoid serialization issues
     public static class JobApplicationDTO {
         public Integer id;
         public Integer jobId;
@@ -80,7 +79,6 @@ public class JobApplicationController {
 
     }
 
-    // ✅ Fetch all applications
     @GetMapping
     public List<JobApplicationDTO> getAllApplications() {
         try {
@@ -97,7 +95,6 @@ public class JobApplicationController {
         return jobApplicationService.getAllScheduledInterviews();
     }
 
-    // ✅ Fetch applications by job ID
     @GetMapping("/job/{jobId}")
     public List<JobApplicationDTO> getApplicationsByJob(@PathVariable Integer jobId) {
         try {
@@ -109,7 +106,6 @@ public class JobApplicationController {
         }
     }
 
-    // ✅ Fetch applications by candidate ID
     @GetMapping("/candidate/{candidateId}")
     public List<JobApplicationDTO> getApplicationsByCandidate(@PathVariable Long candidateId) {
         try {
@@ -211,7 +207,6 @@ public class JobApplicationController {
         return dto;
     }
 
-    // ✅ Apply for job
     @PostMapping("/apply")
     public JobApplication applyForJob(
             @RequestParam("jobId") Integer jobId,
@@ -236,7 +231,6 @@ public class JobApplicationController {
                 cpi, experience, whyJoin, resumeFile);
     }
 
-    // ✅ Download resume by application ID
     @GetMapping("/{id}/resume")
     public ResponseEntity<byte[]> downloadResume(@PathVariable Long id) {
         JobApplication app = jobApplicationService.getApplicationById(id);
