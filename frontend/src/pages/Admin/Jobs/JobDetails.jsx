@@ -1,4 +1,3 @@
-// JobDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./JobDetails.css";
@@ -10,7 +9,6 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [closingReason, setClosingReason] = useState("");
 
-  // Fetch job from backend API
   useEffect(() => {
     setLoading(true);
     fetch(`http://localhost:8081/api/jobs/${id}`)
@@ -79,10 +77,18 @@ const JobDetails = () => {
             </div>
 
             <div className="header-actions">
-              <button className="secondary btn-sm" onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}>
+              <button
+                className="secondary btn-sm"
+                onClick={() => navigate(`/admin/jobs/edit/${job.jobId}`)}
+              >
                 Edit
               </button>
-              <button className="secondary btn-sm" onClick={() => navigate("/admin/jobs")}>Back</button>
+              <button
+                className="secondary btn-sm"
+                onClick={() => navigate("/admin/jobs")}
+              >
+                Back
+              </button>
             </div>
           </header>
 

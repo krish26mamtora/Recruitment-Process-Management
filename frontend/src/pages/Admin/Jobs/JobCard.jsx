@@ -1,4 +1,3 @@
-// JobCard.jsx
 import React from "react";
 import "./JobCard.css";
 

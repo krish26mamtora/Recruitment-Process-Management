@@ -20,7 +20,6 @@ const JobList = () => {
       const data = await res.json();
       setJobs(data || []);
 
-      // Also load job applications to compute counts per job
       const appsRes = await fetch(`http://localhost:8081/api/job-applications`);
       if (appsRes.ok) {
         const apps = await appsRes.json();
@@ -44,7 +43,6 @@ const JobList = () => {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line
   }, [q, statusFilter]);
 
   const handleDelete = async (id) => {
@@ -105,9 +103,15 @@ const JobList = () => {
             jobs.map((job) => (
               <div key={job.jobId} className="job-grid-item">
                 {/* Pass application count to the card */}
-                <JobCard job={job} applicationCount={appCounts[job.jobId] || 0} />
+                <JobCard
+                  job={job}
+                  applicationCount={appCounts[job.jobId] || 0}
+                />
                 <div className="job-item-actions">
-                  <button className="secondary btn-sm" onClick={() => navigate(`/admin/jobs/${job.jobId}`)}>
+                  <button
+                    className="secondary btn-sm"
+                    onClick={() => navigate(`/admin/jobs/${job.jobId}`)}
+                  >
                     View
                   </button>
                   <button
@@ -118,6 +122,7 @@ const JobList = () => {
                   </button>
                   <button
                     className="danger btn-sm"
+                    style={{ backgroundColor: "var(--danger)", color: "white" }}
                     onClick={() => handleDelete(job.jobId)}
                   >
                     Delete
@@ -125,7 +130,9 @@ const JobList = () => {
                   {/* New per-job applications button */}
                   <button
                     className="primary btn-sm applications-btn"
-                    onClick={() => navigate(`/admin/jobs/${job.jobId}/applications`)}
+                    onClick={() =>
+                      navigate(`/admin/jobs/${job.jobId}/applications`)
+                    }
                   >
                     Applications
                   </button>
