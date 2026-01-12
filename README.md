@@ -22,6 +22,7 @@ A web-based system to manage the recruitment process, including job postings, ca
 |-----------|--------------------------|
 | Frontend  | React.js (JavaScript)    |
 | Backend   | Spring Boot (Java)       |
-| Database  | MySQL                    |
+| Database  | PostgreSQL               |
+
 
 
