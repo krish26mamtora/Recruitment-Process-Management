@@ -75,19 +75,24 @@
 /backend/demo/.nb-gradle/
 /backend/demo/build/
 
-# VS Code
 /backend/demo/.vscode/
 
-# OS-specific
 /backend/.DS_Store
 
+/backend/demo/.smarttomcat/
 
-# =========================
-# Common ignores (root + both sides)
-# =========================
+/backend/demo/conf/
 
-# Env files (root, frontend, backend)
+*.log
+
+**/temp/
+**/work/
+
+
+
 .env
 *.env
 .DS_Store
 .DS_Store
+
+/backend/demo/src/main/resources/application.properties
