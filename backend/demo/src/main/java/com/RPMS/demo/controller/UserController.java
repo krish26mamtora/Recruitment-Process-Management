@@ -40,7 +40,6 @@ public class UserController {
         return ResponseEntity.ok("Role updated successfully");
     }
 
-    // New endpoint to support PUT /api/users/{id}/roles used by AdminUsers.jsx
     @PutMapping("/{id}/roles")
     public ResponseEntity<String> updateUserRolesPut(@PathVariable("id") Long userId,
             @RequestBody RoleUpdateRequest request) {

@@ -49,9 +49,9 @@ const CandidateProfile = () => {
   const [summary, setSummary] = useState("");
 
   // Skills
-  const [skills, setSkills] = useState(''); // Comma-separated string
+  const [skills, setSkills] = useState(""); // Comma-separated string
   const [allSkills, setAllSkills] = useState([]); // For autocomplete
-  const [skillInput, setSkillInput] = useState(''); // Current input in the skill field
+  const [skillInput, setSkillInput] = useState(""); // Current input in the skill field
   const [suggestions, setSuggestions] = useState([]); // Filtered suggestions
 
   // Structured sections
@@ -78,7 +78,7 @@ const CandidateProfile = () => {
 
   const isSelf = (() => {
     const storedUserId = String(
-      window.localStorage.getItem("userId") || ""
+      window.localStorage.getItem("userId") || "",
     ).trim();
     const paramUserId = routeUserId ? String(routeUserId).trim() : null;
     if (!paramUserId) return true; // candidate viewing their own via /candidate/profile
@@ -90,7 +90,7 @@ const CandidateProfile = () => {
     setter((prev) => prev.filter((_, i) => i !== index));
   const updateItem = (index, setter, field, value) =>
     setter((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
     );
 
   const toJson = (obj) => JSON.stringify(obj);
@@ -99,8 +99,8 @@ const CandidateProfile = () => {
     const value = e.target.value;
     setSkillInput(value);
     if (value) {
-      const filtered = allSkills.filter(s =>
-        s.skill_name.toLowerCase().includes(value.toLowerCase())
+      const filtered = allSkills.filter((s) =>
+        s.skill_name.toLowerCase().includes(value.toLowerCase()),
       );
       setSuggestions(filtered);
     } else {
@@ -121,21 +121,31 @@ const CandidateProfile = () => {
 
   const addSkill = (skill) => {
     const trimmedSkill = skill.trim();
-    if (trimmedSkill && !skills.split(',').map(s => s.trim()).includes(trimmedSkill)) {
-      setSkills(prev => prev ? `${prev}, ${trimmedSkill}` : trimmedSkill);
+    if (
+      trimmedSkill &&
+      !skills
+        .split(",")
+        .map((s) => s.trim())
+        .includes(trimmedSkill)
+    ) {
+      setSkills((prev) => (prev ? `${prev}, ${trimmedSkill}` : trimmedSkill));
     }
-    setSkillInput('');
+    setSkillInput("");
     setSuggestions([]);
   };
 
   const removeSkill = (skillToRemove) => {
-    setSkills(prev =>
-      prev.split(',').map(s => s.trim()).filter(s => s !== skillToRemove).join(', ')
+    setSkills((prev) =>
+      prev
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s !== skillToRemove)
+        .join(", "),
     );
   };
 
   const handleSkillInputKeyDown = (e) => {
-    if (e.key === 'Enter' && skillInput) {
+    if (e.key === "Enter" && skillInput) {
       e.preventDefault();
       addSkill(skillInput);
     }
@@ -170,27 +180,30 @@ const CandidateProfile = () => {
       setExperiences(
         p.experiencesJson
           ? JSON.parse(p.experiencesJson)
-          : [{ ...emptyExperience }]
+          : [{ ...emptyExperience }],
       );
       setEducation(
-        p.educationJson ? JSON.parse(p.educationJson) : [{ ...emptyEducation }]
+        p.educationJson ? JSON.parse(p.educationJson) : [{ ...emptyEducation }],
       );
       setCertifications(
         p.certificationsJson
           ? JSON.parse(p.certificationsJson)
-          : [{ ...emptyCertification }]
+          : [{ ...emptyCertification }],
       );
       setProjects(
-        p.projectsJson ? JSON.parse(p.projectsJson) : [{ ...emptyProject }]
+        p.projectsJson ? JSON.parse(p.projectsJson) : [{ ...emptyProject }],
       );
       setHasResume(!!p.resumeFileName); // Check if a resume file name exists
-      const att = p.attachmentsJson && typeof p.attachmentsJson === 'string' ? JSON.parse(p.attachmentsJson) : {};
+      const att =
+        p.attachmentsJson && typeof p.attachmentsJson === "string"
+          ? JSON.parse(p.attachmentsJson)
+          : {};
       setCoverLetterUrl(att.coverLetterUrl || "");
       setLinkedin(p.linkedin || "");
       setGithub(p.github || "");
       setPortfolio(p.portfolio || "");
       setExpectedSalary(
-        p.expectedSalary != null ? String(p.expectedSalary) : ""
+        p.expectedSalary != null ? String(p.expectedSalary) : "",
       );
       setNoticePeriod(p.noticePeriod || "");
       setPreferredJobLocation(p.preferredJobLocation || "");
@@ -275,7 +288,7 @@ const CandidateProfile = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!res.ok) {
@@ -304,7 +317,7 @@ const CandidateProfile = () => {
     }
     window.open(
       `http://localhost:8081/api/user-profiles/${uidStr}/resume`,
-      "_blank"
+      "_blank",
     );
   };
 
@@ -321,28 +334,40 @@ const CandidateProfile = () => {
     // Fetch all skills for autocomplete
     const fetchAllSkills = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/skills');
-        if (!res.ok) throw new Error('Failed to fetch skills');
+        const res = await fetch("http://localhost:8081/api/skills");
+        if (!res.ok) throw new Error("Failed to fetch skills");
         const data = await res.json();
         setAllSkills(data);
       } catch (error) {
         console.error(error);
-        toast.error('Could not load skills list.');
+        toast.error("Could not load skills list.");
       }
     };
     fetchAllSkills();
   }, [routeUserId]);
 
-
   if (!isSelf) {
     // Admin read-only view
     return (
-      <div className="page candidate-profile-page admin-view">
+      <div
+        className="page candidate-profile-page admin-view"
+        style={{ padding: "25px" }}
+      >
         <div className="page-inner">
           <div className="page-header">
-            <h1 className="page-title">Candidate Profile (User ID: {routeUserId})</h1>
-            <div className="page-actions profile-actions" style={{ marginBottom: '20px' }}>
-              <button className="primary" onClick={() => setIsJobModalOpen(true)}>Show Job Listings & Apply</button>
+            <h1 className="page-title">
+              Candidate Profile (User ID: {routeUserId})
+            </h1>
+            <div
+              className="page-actions profile-actions"
+              style={{ marginBottom: "20px" }}
+            >
+              <button
+                className="primary"
+                onClick={() => setIsJobModalOpen(true)}
+              >
+                Show Job Listings & Apply
+              </button>
             </div>
           </div>
 
@@ -356,51 +381,124 @@ const CandidateProfile = () => {
             <section>
               <h2>1. Basic Personal Details</h2>
               <div className="grid-3-compact">
-                <p><strong>Full Name:</strong> {fullName || '—'}</p>
-                <p><strong>Email:</strong> {email || '—'}</p>
-                <p><strong>Phone:</strong> {phone || '—'}</p>
-                <p><strong>City:</strong> {city || '—'}</p>
-                {profilePhotoUrl && <p><strong>Photo:</strong> <a href={profilePhotoUrl} target="_blank" rel="noopener noreferrer">View</a></p>}
+                <p>
+                  <strong>Full Name:</strong> {fullName || "—"}
+                </p>
+                <p>
+                  <strong>Email:</strong> {email || "—"}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {phone || "—"}
+                </p>
+                <p>
+                  <strong>City:</strong> {city || "—"}
+                </p>
+                {profilePhotoUrl && (
+                  <p>
+                    <strong>Photo:</strong>{" "}
+                    <a
+                      href={profilePhotoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View
+                    </a>
+                  </p>
+                )}
               </div>
             </section>
 
             <section>
               <h2>2. Professional Summary</h2>
-              <p><strong>Current Title:</strong> {currentJobTitle || '—'}</p>
-              <p><strong>Summary:</strong> {summary || '—'}</p>
+              <p>
+                <strong>Current Title:</strong> {currentJobTitle || "—"}
+              </p>
+              <p>
+                <strong>Summary:</strong> {summary || "—"}
+              </p>
             </section>
 
             <section>
               <h2>3. Technical Skills</h2>
-              <p>{skills || '—'}</p>
+              <p>{skills || "—"}</p>
             </section>
 
             <section>
               <h2>4. Work Experience</h2>
-              {experiences.map((exp, idx) => exp.companyName && (
-                <div key={idx} className="card compact">
-                  <p><strong>{exp.jobTitle}</strong> at <strong>{exp.companyName}</strong> ({exp.startDate} - {exp.endDate})</p>
-                  <p><em>Technologies:</em> {exp.technologies}</p>
-                </div>
-              ))}
+              {experiences.map(
+                (exp, idx) =>
+                  exp.companyName && (
+                    <div key={idx} className="card compact">
+                      <p>
+                        <strong>{exp.jobTitle}</strong> at{" "}
+                        <strong>{exp.companyName}</strong> ({exp.startDate} -{" "}
+                        {exp.endDate})
+                      </p>
+                      <p>
+                        <em>Technologies:</em> {exp.technologies}
+                      </p>
+                    </div>
+                  ),
+              )}
             </section>
 
             <section>
               <h2>5. Education</h2>
-              {education.map((ed, idx) => ed.degree && (
-                <div key={idx} className="card compact">
-                  <p><strong>{ed.degree}, {ed.specialization}</strong> - {ed.college} ({ed.passingYear})</p>
-                </div>
-              ))}
+              {education.map(
+                (ed, idx) =>
+                  ed.degree && (
+                    <div key={idx} className="card compact">
+                      <p>
+                        <strong>
+                          {ed.degree}, {ed.specialization}
+                        </strong>{" "}
+                        - {ed.college} ({ed.passingYear})
+                      </p>
+                    </div>
+                  ),
+              )}
             </section>
 
             <section>
               <h2>6. Attachments & Links</h2>
               <div className="grid-3-compact">
-                {hasResume && <button className="primary" onClick={handleResumeDownload}>Download Resume</button>}
-                {linkedin && <p><strong>LinkedIn:</strong> <a href={linkedin} target="_blank" rel="noopener noreferrer">View</a></p>}
-                {github && <p><strong>GitHub:</strong> <a href={github} target="_blank" rel="noopener noreferrer">View</a></p>}
-                {portfolio && <p><strong>Portfolio:</strong> <a href={portfolio} target="_blank" rel="noopener noreferrer">View</a></p>}
+                {hasResume && (
+                  <button className="primary" onClick={handleResumeDownload}>
+                    Download Resume
+                  </button>
+                )}
+                {linkedin && (
+                  <p>
+                    <strong>LinkedIn:</strong>{" "}
+                    <a
+                      href={linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View
+                    </a>
+                  </p>
+                )}
+                {github && (
+                  <p>
+                    <strong>GitHub:</strong>{" "}
+                    <a href={github} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  </p>
+                )}
+                {portfolio && (
+                  <p>
+                    <strong>Portfolio:</strong>{" "}
+                    <a
+                      href={portfolio}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View
+                    </a>
+                  </p>
+                )}
               </div>
             </section>
           </div>
@@ -411,7 +509,7 @@ const CandidateProfile = () => {
 
   //</div> Candidate's own editable view
   return (
-    <div className="page candidate-profile-page">
+    <div className="page candidate-profile-page" style={{ padding: "25px" }}>
       <div className="page-inner">
         <div className="page-header">
           <h1 className="page-title">
@@ -487,7 +585,7 @@ const CandidateProfile = () => {
               />
               {suggestions.length > 0 && (
                 <ul className="suggestions-list">
-                  {suggestions.map(s => (
+                  {suggestions.map((s) => (
                     <li key={s.skill_id} onClick={() => addSkill(s.skill_name)}>
                       {s.skill_name}
                     </li>
@@ -496,12 +594,15 @@ const CandidateProfile = () => {
               )}
             </div>
             <div className="skills-tags">
-              {skills.split(',').filter(s => s.trim()).map((skill, i) => (
-                <div key={i} className="skill-tag">
-                  {skill}
-                  <button onClick={() => removeSkill(skill)}>x</button>
-                </div>
-              ))}
+              {skills
+                .split(",")
+                .filter((s) => s.trim())
+                .map((skill, i) => (
+                  <div key={i} className="skill-tag">
+                    {skill}
+                    <button onClick={() => removeSkill(skill)}>x</button>
+                  </div>
+                ))}
             </div>
           </div>
         </section>
@@ -515,7 +616,12 @@ const CandidateProfile = () => {
                   placeholder="Company Name"
                   value={exp.companyName}
                   onChange={(e) =>
-                    updateItem(idx, setExperiences, "companyName", e.target.value)
+                    updateItem(
+                      idx,
+                      setExperiences,
+                      "companyName",
+                      e.target.value,
+                    )
                   }
                 />
                 <input
@@ -547,7 +653,7 @@ const CandidateProfile = () => {
                       idx,
                       setExperiences,
                       "responsibilities",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -559,7 +665,7 @@ const CandidateProfile = () => {
                       idx,
                       setExperiences,
                       "achievements",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -571,7 +677,7 @@ const CandidateProfile = () => {
                       idx,
                       setExperiences,
                       "technologies",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -609,7 +715,7 @@ const CandidateProfile = () => {
                       idx,
                       setEducation,
                       "specialization",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -661,7 +767,7 @@ const CandidateProfile = () => {
                       idx,
                       setCertifications,
                       "organization",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -669,7 +775,12 @@ const CandidateProfile = () => {
                   placeholder="Validity"
                   value={c.validity}
                   onChange={(e) =>
-                    updateItem(idx, setCertifications, "validity", e.target.value)
+                    updateItem(
+                      idx,
+                      setCertifications,
+                      "validity",
+                      e.target.value,
+                    )
                   }
                 />
                 <input
@@ -680,7 +791,7 @@ const CandidateProfile = () => {
                       idx,
                       setCertifications,
                       "certificateUrl",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
@@ -693,7 +804,9 @@ const CandidateProfile = () => {
               </button>
             </div>
           ))}
-          <button onClick={() => addItem(setCertifications, emptyCertification)}>
+          <button
+            onClick={() => addItem(setCertifications, emptyCertification)}
+          >
             + Add Certification
           </button>
         </section>
