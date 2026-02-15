@@ -27,9 +27,11 @@ const Navbar = () => {
         </div>
 
         <ul className="nav-list">
-          <li className="nav-item">
-            <NavLink to="/" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>Home</NavLink>
-          </li>
+          {!isLoggedIn && (
+            <li className="nav-item">
+              <NavLink to="/" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>Home</NavLink>
+            </li>
+          )}
 
           {userRoles.includes("Admin") ? (
             <>
