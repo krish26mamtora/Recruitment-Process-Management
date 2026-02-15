@@ -116,4 +116,42 @@ public class EmailServiceImpl implements EmailService {
             log.debug("Email send error details:", e);
         }
     }
+
+    @Async
+    @Override
+    public void sendInterviewFeedbackEmail(String toEmail, String candidateName, String jobTitle,
+            String round, String interviewerName, String comments, String ratingsJson) {
+        String subject = "Interview Feedback: " + jobTitle + " (" + round + ")";
+
+        // Format ratings for better readability
+        String ratingsText = "";
+        if (ratingsJson != null && !ratingsJson.isBlank()) {
+            try {
+                // Simple formatting for JSON ratings
+                ratingsText = "\nRatings: " + ratingsJson.replaceAll("\\{|\\}", "").replaceAll(",", ", ");
+            } catch (Exception e) {
+                ratingsText = "\nRatings: " + ratingsJson;
+            }
+        }
+
+        String body = "Hello " + candidateName + ",\n\n" +
+                "Your interview for " + jobTitle + " (" + round + ") has been reviewed.\n\n" +
+                "Interviewer: " + interviewerName +
+                (comments != null && !comments.isBlank() ? "\n\nFeedback: " + comments : "") +
+                ratingsText +
+                "\n\nWe will contact you soon with the next steps.\n\nRegards,\nRecruitment Team";
+
+        try {
+            SimpleMailMessage messageObj = new SimpleMailMessage();
+            messageObj.setTo(toEmail);
+            messageObj.setSubject(subject);
+            messageObj.setText(body);
+            mailSender.send(messageObj);
+            log.info("Sent interview feedback email to {} for '{}'", toEmail, jobTitle);
+        } catch (Exception e) {
+            log.error("Failed to send interview feedback email to {} for '{}'. Error: {}", toEmail, jobTitle,
+                    e.getMessage());
+            log.debug("Email send error details:", e);
+        }
+    }
 }
