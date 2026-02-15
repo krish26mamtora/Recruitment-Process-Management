@@ -139,10 +139,10 @@ const JobApplications = ({ jobId }) => {
                   <th>Candidate Name</th>
                   <th>Email</th>
                   <th>Job Title</th>
-                  <th>Gender</th>
-                  <th>College</th>
-                  <th>Degree</th>
-                  <th>Experience</th>
+                  {/* ÷<th>Gender</th> */}
+                  {/* <th>College</th>
+                  <th>Degree</th> */}
+                  {/* <th>Experience</th> */}
                   <th>Status</th>
                   <th>Applied On</th>
                   <th>Resume</th>
@@ -161,10 +161,10 @@ const JobApplications = ({ jobId }) => {
                         jobTitle ||
                         (app.jobId ? `Job #${app.jobId}` : "—")}
                     </td>
-                    <td>{app.gender || "—"}</td>
+                    {/* <td>{app.gender || "—"}</td>
                     <td>{app.collegeName || "—"}</td>
                     <td>{app.degree || "—"}</td>
-                    <td>{app.experience || "—"}</td>
+                    <td>{app.experience || "—"}</td> */}
                     <td>
                       <span className="pill">{app.status || "—"}</span>
                     </td>
