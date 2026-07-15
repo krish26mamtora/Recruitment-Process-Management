@@ -40,7 +40,6 @@ public class UserController {
         return ResponseEntity.ok("Role updated successfully");
     }
 
-    // New endpoint to support PUT /api/users/{id}/roles used by AdminUsers.jsx
     @PutMapping("/{id}/roles")
     public ResponseEntity<String> updateUserRolesPut(@PathVariable("id") Long userId,
             @RequestBody RoleUpdateRequest request) {
@@ -60,6 +59,21 @@ public class UserController {
                 user = userService.getUserById(user.getUserId());
             }
             return ResponseEntity.ok(user);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
+        }
+    }
+
+    // Register endpoint for frontend registration
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody CreateUserRequest request) {
+        try {
+            User user = userService.registerUser(request.getUsername(), request.getFullName(), request.getEmail(),
+                    request.getPassword());
+            // Set default role as Candidate for new registrations
+            userService.setUserRoles(user.getUserId(), Set.of("ROLE_USER", "Candidate"));
+            return ResponseEntity.ok("Registration successful");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT)
                     .body(ex.getMessage());
@@ -124,6 +138,7 @@ public class UserController {
         private String username;
         private String fullName;
         private String email;
+        private String password;
         private Set<String> roles;
 
         public String getUsername() {
@@ -148,6 +163,14 @@ public class UserController {
 
         public void setEmail(String email) {
             this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
 
         public Set<String> getRoles() {

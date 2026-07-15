@@ -48,6 +48,7 @@
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
   margin-top: 12px;
+  padding: 25px;
 }
 
 /* Each job item contains JobCard and actions */

@@ -23,11 +23,11 @@ export default function ApplyJob({ jobId, candidateId }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:8081/api/job-applications/apply",
+        import.meta.env.VITE_API_BASE_URL + "/job-applications/apply",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-        }
+        },
       );
       setMessage(res.data);
     } catch {
@@ -41,9 +41,15 @@ export default function ApplyJob({ jobId, candidateId }) {
         <h2>Apply for Job</h2>
         <form onSubmit={handleUpload}>
           <input type="file" accept=".pdf" onChange={handleFileChange} />
-          <button type="submit" style={{ marginTop: 12 }}>Upload Resume & Apply</button>
+          <button type="submit" style={{ marginTop: 12 }}>
+            Upload Resume & Apply
+          </button>
         </form>
-        {message && <p className="muted" style={{ marginTop: 10 }}>{message}</p>}
+        {message && (
+          <p className="muted" style={{ marginTop: 10 }}>
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );

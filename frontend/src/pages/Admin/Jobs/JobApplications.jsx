@@ -10,8 +10,12 @@ const JobApplications = ({ jobId }) => {
   const [selectedApp, setSelectedApp] = useState(null);
   const [round, setRound] = useState("Technical");
   const [customRound, setCustomRound] = useState("");
+  const [experienceFilter, setExperienceFilter] = useState("ALL");
+  const [experienceSort, setExperienceSort] = useState("NONE");
   const [scheduledAt, setScheduledAt] = useState("");
-  const [meetLink, setMeetLink] = useState("https://meet.google.com/dummy-link");
+  const [meetLink, setMeetLink] = useState(
+    "https://meet.google.com/dummy-link",
+  );
   const [message, setMessage] = useState("");
   const [interviewerEmails, setInterviewerEmails] = useState([]);
   const [currentEmail, setCurrentEmail] = useState("");
@@ -22,8 +26,8 @@ const JobApplications = ({ jobId }) => {
     setLoading(true);
     try {
       const url = jobId
-        ? `http://localhost:8081/api/job-applications/job/${jobId}`
-        : `http://localhost:8081/api/job-applications`;
+        ? import.meta.env.VITE_API_BASE_URL + `/job-applications/job/${jobId}`
+        : import.meta.env.VITE_API_BASE_URL + `/job-applications`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch job applications");
       const data = await res.json();
@@ -48,7 +52,9 @@ const JobApplications = ({ jobId }) => {
         return;
       }
       try {
-        const res = await fetch(`http://localhost:8081/api/jobs/${jobId}`);
+        const res = await fetch(
+          import.meta.env.VITE_API_BASE_URL + `/jobs/${jobId}`,
+        );
         if (!res.ok) return;
         const job = await res.json();
         setJobTitle(job?.title || "");
@@ -57,13 +63,65 @@ const JobApplications = ({ jobId }) => {
     loadJobTitle();
   }, [jobId]);
 
+  const filteredApplications = applications
+    .filter((app) => {
+      const exp = parseFloat(app.experience) || 0;
+
+      if (experienceFilter === "FRESHER") return exp === 0;
+      if (experienceFilter === "0-2") return exp > 0 && exp <= 2;
+      if (experienceFilter === "2-5") return exp > 2 && exp <= 5;
+      if (experienceFilter === "5+") return exp > 5;
+
+      return true; // ALL
+    })
+    .sort((a, b) => {
+      const expA = parseFloat(a.experience) || 0;
+      const expB = parseFloat(b.experience) || 0;
+
+      if (experienceSort === "ASC") return expA - expB;
+      if (experienceSort === "DESC") return expB - expA;
+      return 0;
+    });
+
   return (
-    <div className="page job-applications-page">
+    <div className="page job-applications-page" style={{ padding: "25px" }}>
       <div className="page-inner">
         <div className="page-header">
           <h1 className="page-title">
-            {jobId ? (jobTitle ? `Applications for ${jobTitle}` : `Applications for Job #${jobId}`) : "Candidate Job Applications"}
+            {jobId
+              ? jobTitle
+                ? `Applications for ${jobTitle}`
+                : `Applications for Job #${jobId}`
+              : "Candidate Job Applications"}
           </h1>
+        </div>
+
+        <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
+          <div>
+            <label>Filter by Experience</label>
+            <select
+              value={experienceFilter}
+              onChange={(e) => setExperienceFilter(e.target.value)}
+            >
+              <option value="ALL">All</option>
+              <option value="FRESHER">Fresher (0)</option>
+              <option value="0-2">0 - 2 Years</option>
+              <option value="2-5">2 - 5 Years</option>
+              <option value="5+">5+ Years</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Sort</label>
+            <select
+              value={experienceSort}
+              onChange={(e) => setExperienceSort(e.target.value)}
+            >
+              <option value="NONE">None</option>
+              <option value="ASC">Low → High</option>
+              <option value="DESC">High → Low</option>
+            </select>
+          </div>
         </div>
 
         {loading && <div className="loading">Loading...</div>}
@@ -83,10 +141,10 @@ const JobApplications = ({ jobId }) => {
                   <th>Candidate Name</th>
                   <th>Email</th>
                   <th>Job Title</th>
-                  <th>Gender</th>
-                  <th>College</th>
-                  <th>Degree</th>
-                  <th>Experience</th>
+                  {/* ÷<th>Gender</th> */}
+                  {/* <th>College</th>
+                  <th>Degree</th> */}
+                  {/* <th>Experience</th> */}
                   <th>Status</th>
                   <th>Applied On</th>
                   <th>Resume</th>
@@ -94,16 +152,21 @@ const JobApplications = ({ jobId }) => {
                 </tr>
               </thead>
               <tbody>
-                {applications.map((app, index) => (
+                {/* {applications.map((app, index) => ( */}
+                {filteredApplications.map((app, index) => (
                   <tr key={app.id}>
                     <td>{index + 1}</td>
                     <td>{app.fullName || "—"}</td>
                     <td>{app.email || "—"}</td>
-                    <td>{app.jobTitle || jobTitle || (app.jobId ? `Job #${app.jobId}` : "—")}</td>
-                    <td>{app.gender || "—"}</td>
+                    <td>
+                      {app.jobTitle ||
+                        jobTitle ||
+                        (app.jobId ? `Job #${app.jobId}` : "—")}
+                    </td>
+                    {/* <td>{app.gender || "—"}</td>
                     <td>{app.collegeName || "—"}</td>
                     <td>{app.degree || "—"}</td>
-                    <td>{app.experience || "—"}</td>
+                    <td>{app.experience || "—"}</td> */}
                     <td>
                       <span className="pill">{app.status || "—"}</span>
                     </td>
@@ -115,7 +178,10 @@ const JobApplications = ({ jobId }) => {
                     <td>
                       {app.fileName ? (
                         <a
-                          href={`http://localhost:8081/api/job-applications/${app.id}/resume`}
+                          href={
+                            import.meta.env.VITE_API_BASE_URL +
+                            `/job-applications/${app.id}/resume`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="resume-link"
@@ -162,12 +228,20 @@ const JobApplications = ({ jobId }) => {
             <div className="modal-content" style={{ maxWidth: 520 }}>
               <div className="modal-header">
                 <h2>Schedule Interview</h2>
-                <button className="close-modal" onClick={() => setShowScheduleModal(false)}>Close</button>
+                <button
+                  className="close-modal"
+                  onClick={() => setShowScheduleModal(false)}
+                >
+                  Close
+                </button>
               </div>
               <div className="modal-body">
                 <div className="form-row">
                   <label>Round</label>
-                  <select value={round} onChange={(e) => setRound(e.target.value)}>
+                  <select
+                    value={round}
+                    onChange={(e) => setRound(e.target.value)}
+                  >
                     <option value="Technical">Technical</option>
                     <option value="HR">HR</option>
                     <option value="Custom">Custom</option>
@@ -176,35 +250,55 @@ const JobApplications = ({ jobId }) => {
                 {round === "Custom" && (
                   <div className="form-row">
                     <label>Custom Round Name</label>
-                    <input value={customRound} onChange={(e) => setCustomRound(e.target.value)} placeholder="e.g., Managerial" />
+                    <input
+                      value={customRound}
+                      onChange={(e) => setCustomRound(e.target.value)}
+                      placeholder="e.g., Managerial"
+                    />
                   </div>
                 )}
                 <div className="form-row">
                   <label>Date & Time</label>
-                  <input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} />
+                  <input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                  />
                 </div>
                 <div className="form-row">
                   <label>Meet Link</label>
-                  <input value={meetLink} onChange={(e) => setMeetLink(e.target.value)} />
+                  <input
+                    value={meetLink}
+                    onChange={(e) => setMeetLink(e.target.value)}
+                  />
                 </div>
                 <div className="form-row">
                   <label>Message</label>
-                  <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Any additional instructions" />
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Any additional instructions"
+                  />
                 </div>
                 <div className="form-row">
                   <label>Panel Interviewers (Optional)</label>
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                  <div
+                    style={{ display: "flex", gap: "8px", marginBottom: "8px" }}
+                  >
                     <input
                       type="email"
                       value={currentEmail}
                       onChange={(e) => setCurrentEmail(e.target.value)}
                       placeholder="interviewer@example.com"
                       onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                           e.preventDefault();
-                          if (currentEmail && currentEmail.includes('@')) {
-                            setInterviewerEmails([...interviewerEmails, currentEmail]);
-                            setCurrentEmail('');
+                          if (currentEmail && currentEmail.includes("@")) {
+                            setInterviewerEmails([
+                              ...interviewerEmails,
+                              currentEmail,
+                            ]);
+                            setCurrentEmail("");
                           }
                         }
                       }}
@@ -213,9 +307,12 @@ const JobApplications = ({ jobId }) => {
                       type="button"
                       className="secondary"
                       onClick={() => {
-                        if (currentEmail && currentEmail.includes('@')) {
-                          setInterviewerEmails([...interviewerEmails, currentEmail]);
-                          setCurrentEmail('');
+                        if (currentEmail && currentEmail.includes("@")) {
+                          setInterviewerEmails([
+                            ...interviewerEmails,
+                            currentEmail,
+                          ]);
+                          setCurrentEmail("");
                         }
                       }}
                     >
@@ -223,13 +320,19 @@ const JobApplications = ({ jobId }) => {
                     </button>
                   </div>
                   {interviewerEmails.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <div
+                      style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}
+                    >
                       {interviewerEmails.map((email, idx) => (
                         <span key={idx} className="interviewer-pill">
                           {email}
                           <button
                             type="button"
-                            onClick={() => setInterviewerEmails(interviewerEmails.filter((_, i) => i !== idx))}
+                            onClick={() =>
+                              setInterviewerEmails(
+                                interviewerEmails.filter((_, i) => i !== idx),
+                              )
+                            }
                             className="interviewer-pill-remove"
                           >
                             ×
@@ -244,8 +347,12 @@ const JobApplications = ({ jobId }) => {
                 <button
                   className="primary"
                   onClick={async () => {
-                    if (!scheduledAt) { alert("Please select date & time"); return; }
-                    const r = round === "Custom" ? (customRound || "Custom") : round;
+                    if (!scheduledAt) {
+                      alert("Please select date & time");
+                      return;
+                    }
+                    const r =
+                      round === "Custom" ? customRound || "Custom" : round;
                     const payload = {
                       round: r,
                       scheduledAt,
@@ -254,26 +361,33 @@ const JobApplications = ({ jobId }) => {
                       interviewerEmails,
                     };
                     try {
-                      const res = await fetch(`http://localhost:8081/api/job-applications/${selectedApp.id}/schedule-interview`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                      });
-                      if (!res.ok) { const t = await res.text(); throw new Error(t || 'Failed to schedule'); }
+                      const res = await fetch(
+                        import.meta.env.VITE_API_BASE_URL +
+                          `/job-applications/${selectedApp.id}/schedule-interview`,
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify(payload),
+                        },
+                      );
+                      if (!res.ok) {
+                        const t = await res.text();
+                        throw new Error(t || "Failed to schedule");
+                      }
                       setShowScheduleModal(false);
                       setSelectedApp(null);
-                      setRound('Technical');
-                      setCustomRound('');
-                      setScheduledAt('');
-                      setMeetLink('https://meet.google.com/dummy-link');
-                      setMessage('');
+                      setRound("Technical");
+                      setCustomRound("");
+                      setScheduledAt("");
+                      setMeetLink("https://meet.google.com/dummy-link");
+                      setMessage("");
                       setInterviewerEmails([]);
-                      setCurrentEmail('');
+                      setCurrentEmail("");
                       await loadApplications();
-                      alert('Interview scheduled and candidate notified.');
+                      alert("Interview scheduled and candidate notified.");
                     } catch (e) {
                       console.error(e);
-                      alert('Could not schedule interview');
+                      alert("Could not schedule interview");
                     }
                   }}
                 >
@@ -289,22 +403,40 @@ const JobApplications = ({ jobId }) => {
             <div className="modal-content" style={{ maxWidth: 520 }}>
               <div className="modal-header">
                 <h2>Update Stage</h2>
-                <button className="close-modal" onClick={() => setShowStatusModal(false)}>Close</button>
+                <button
+                  className="close-modal"
+                  onClick={() => setShowStatusModal(false)}
+                >
+                  Close
+                </button>
               </div>
               <div className="modal-body">
                 <div className="form-row">
                   <label>Status</label>
-                  <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
+                  <select
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
+                  >
                     <option value="Applied">Applied</option>
-                    <option value="Interview - Technical scheduled">Interview - Technical scheduled</option>
-                    <option value="Interview - HR scheduled">Interview - HR scheduled</option>
-                    <option value="Selected - next round">Selected - next round</option>
+                    <option value="Interview - Technical scheduled">
+                      Interview - Technical scheduled
+                    </option>
+                    <option value="Interview - HR scheduled">
+                      Interview - HR scheduled
+                    </option>
+                    <option value="Selected - next round">
+                      Selected - next round
+                    </option>
                     <option value="Rejected">Rejected</option>
                   </select>
                 </div>
                 <div className="form-row">
                   <label>Remarks</label>
-                  <textarea value={newRemarks} onChange={(e) => setNewRemarks(e.target.value)} placeholder="Notes for candidate" />
+                  <textarea
+                    value={newRemarks}
+                    onChange={(e) => setNewRemarks(e.target.value)}
+                    placeholder="Notes for candidate"
+                  />
                 </div>
               </div>
               <div className="modal-footer">
@@ -312,21 +444,31 @@ const JobApplications = ({ jobId }) => {
                   className="primary"
                   onClick={async () => {
                     try {
-                      const res = await fetch(`http://localhost:8081/api/job-applications/${selectedApp.id}/status`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ status: newStatus, remarks: newRemarks })
-                      });
-                      if (!res.ok) { const t = await res.text(); throw new Error(t || 'Failed to update'); }
+                      const res = await fetch(
+                        import.meta.env.VITE_API_BASE_URL +
+                          `/job-applications/${selectedApp.id}/status`,
+                        {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            status: newStatus,
+                            remarks: newRemarks,
+                          }),
+                        },
+                      );
+                      if (!res.ok) {
+                        const t = await res.text();
+                        throw new Error(t || "Failed to update");
+                      }
                       setShowStatusModal(false);
                       setSelectedApp(null);
-                      setNewStatus('');
-                      setNewRemarks('');
+                      setNewStatus("");
+                      setNewRemarks("");
                       await loadApplications();
-                      alert('Stage updated and candidate notified.');
+                      alert("Stage updated and candidate notified.");
                     } catch (e) {
                       console.error(e);
-                      alert('Could not update stage');
+                      alert("Could not update stage");
                     }
                   }}
                 >

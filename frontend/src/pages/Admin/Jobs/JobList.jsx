@@ -14,13 +14,15 @@ const JobList = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8081/api/jobs`);
+      const res = await fetch(import.meta.env.VITE_API_BASE_URL + `/jobs`);
       if (!res.ok) throw new Error("Failed to fetch jobs");
 
       const data = await res.json();
       setJobs(data || []);
 
-      const appsRes = await fetch(`http://localhost:8081/api/job-applications`);
+      const appsRes = await fetch(
+        import.meta.env.VITE_API_BASE_URL + `/job-applications`,
+      );
       if (appsRes.ok) {
         const apps = await appsRes.json();
         const counts = {};
@@ -43,14 +45,17 @@ const JobList = () => {
 
   useEffect(() => {
     load();
-  }, [q, statusFilter]);
+  }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete job? This action cannot be undone.")) return;
     try {
-      const res = await fetch(`http://localhost:8081/api/jobs/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!res.ok) throw new Error("Delete failed");
 
       alert("Job deleted");
@@ -60,47 +65,92 @@ const JobList = () => {
       alert("Delete failed");
     }
   };
+  const filteredJobs = jobs.filter((job) => {
+    const search = q.toLowerCase();
+
+    const matchesSearch =
+      job.title?.toLowerCase().includes(search) ||
+      String(job.jobId)?.includes(search);
+
+    const matchesStatus = !statusFilter || job.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="page job-list-page">
       <div className="page-inner">
-        <div className="page-header job-list-header">
-          <h1 className="page-title">Jobs</h1>
-          <div className="page-actions job-list-actions">
-            <input
-              className="job-search"
-              placeholder="Search by title or id..."
-              value={q}
-              onChange={(e) => {
-                setQ(e.target.value);
-              }}
-            />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">All statuses</option>
-              <option value="open">Open</option>
-              <option value="on_hold">On Hold</option>
-              <option value="closed">Closed</option>
-            </select>
+        <div
+          className="page-actions job-list-actions"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            alignItems: "center",
+            gap: "12px",
+            width: "100%",
+            background: "var(--surface)",
+            padding: "14px 16px",
+            borderRadius: "var(--radius)",
+            boxShadow: "var(--shadow-sm)",
+            border: "1px solid var(--border-soft)",
+          }}
+        >
+          <input
+            placeholder="Search by title or id..."
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            style={{
+              flex: "1 1 auto",
+              minWidth: "200px",
+              padding: "10px 14px",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid var(--border)",
+              outline: "none",
+            }}
+          />
 
-            <button
-              className="primary create-btn"
-              onClick={() => navigate("/admin/jobs/create")}
-            >
-              + Create Job
-            </button>
-          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{
+              flex: "0 0 160px",
+              padding: "10px 12px",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <option value="">All statuses</option>
+            <option value="open">Open</option>
+            <option value="on_hold">On Hold</option>
+            <option value="closed">Closed</option>
+          </select>
+
+          <button
+            onClick={() => navigate("/admin/jobs/create")}
+            style={{
+              flex: "0 0 auto",
+              whiteSpace: "nowrap",
+              padding: "10px 18px",
+              background: "var(--primary)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "var(--radius-sm)",
+              fontWeight: "600",
+              cursor: "pointer",
+            }}
+          >
+            + Create Job
+          </button>
         </div>
 
         {loading && <div className="loading">Loading...</div>}
 
         <div className="job-grid">
-          {jobs.length === 0 && !loading ? (
+          {filteredJobs.length === 0 && !loading ? (
             <div className="empty">No jobs found</div>
           ) : (
-            jobs.map((job) => (
+            filteredJobs.map((job) => (
               <div key={job.jobId} className="job-grid-item">
                 {/* Pass application count to the card */}
                 <JobCard

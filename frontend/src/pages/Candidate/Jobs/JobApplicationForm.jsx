@@ -29,7 +29,7 @@ const JobApplicationForm = () => {
       // Set candidateId automatically
       setFormData((prev) => ({ ...prev, candidateId: String(uid) }));
       // Prefill from UserProfile
-      fetch(`http://localhost:8081/api/user-profiles/${uid}`)
+      fetch(import.meta.env.VITE_API_BASE_URL + `/user-profiles/${uid}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((p) => {
           if (!p) return;
@@ -61,7 +61,8 @@ const JobApplicationForm = () => {
             // Simple experience summary from first item if available
             experience:
               firstExp && (firstExp.jobTitle || firstExp.companyName)
-                ? `${firstExp.jobTitle || ""}${firstExp.jobTitle && firstExp.companyName ? " @ " : ""
+                ? `${firstExp.jobTitle || ""}${
+                    firstExp.jobTitle && firstExp.companyName ? " @ " : ""
                   }${firstExp.companyName || ""}`.trim()
                 : prev.experience,
           }));
@@ -80,7 +81,9 @@ const JobApplicationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const uidStr = formData.candidateId || String(window.localStorage.getItem("userId") || "");
+    const uidStr =
+      formData.candidateId ||
+      String(window.localStorage.getItem("userId") || "");
     const uid = Number(uidStr.trim());
     if (!Number.isFinite(uid) || uid <= 0) {
       alert("No valid candidate found. Please login again.");
@@ -92,20 +95,22 @@ const JobApplicationForm = () => {
     }
 
     const data = new FormData();
-    Object.entries({ ...formData, candidateId: String(uid) }).forEach(([key, value]) => {
-      data.append(key, value);
-    });
+    Object.entries({ ...formData, candidateId: String(uid) }).forEach(
+      ([key, value]) => {
+        data.append(key, value);
+      },
+    );
     data.append("jobId", jobId);
     data.append("resume", resume);
 
     setSubmitting(true);
     try {
       const res = await fetch(
-        "http://localhost:8081/api/job-applications/apply",
+        import.meta.env.VITE_API_BASE_URL + "/job-applications/apply",
         {
           method: "POST",
           body: data,
-        }
+        },
       );
 
       if (!res.ok) throw new Error("Failed to submit application");

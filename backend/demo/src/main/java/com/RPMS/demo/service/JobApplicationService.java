@@ -13,6 +13,7 @@ import com.RPMS.demo.model.User;
 import com.RPMS.demo.model.UserProfile;
 import com.RPMS.demo.model.InterviewFeedback;
 import com.RPMS.demo.dto.InterviewDetailsDTO;
+import com.RPMS.demo.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,9 @@ public class JobApplicationService {
 
     @Autowired
     private InterviewFeedbackRepository interviewFeedbackRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -303,7 +307,24 @@ public class JobApplicationService {
         feedback.setComments(comments);
         feedback.setRatingsJson(ratingsJson);
 
-        return interviewFeedbackRepository.save(feedback);
+        InterviewFeedback savedFeedback = interviewFeedbackRepository.save(feedback);
+
+        // Send feedback email to candidate
+        try {
+            emailService.sendInterviewFeedbackEmail(
+                    app.getEmail(),
+                    app.getFullName(),
+                    app.getJob().getTitle(),
+                    round,
+                    interviewerName,
+                    comments,
+                    ratingsJson);
+        } catch (Exception e) {
+            // Log error but don't fail the feedback submission
+            System.err.println("Failed to send feedback email: " + e.getMessage());
+        }
+
+        return savedFeedback;
     }
 
     @Transactional(readOnly = true)

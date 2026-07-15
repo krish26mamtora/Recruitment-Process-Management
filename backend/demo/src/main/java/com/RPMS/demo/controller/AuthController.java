@@ -20,4 +20,5 @@ public class AuthController {
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         return userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
     }
+
 }
