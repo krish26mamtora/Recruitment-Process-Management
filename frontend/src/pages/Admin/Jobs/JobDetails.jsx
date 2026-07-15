@@ -11,7 +11,7 @@ const JobDetails = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:8081/api/jobs/${id}`)
+    fetch(import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Job not found");
         return res.json();
@@ -40,15 +40,18 @@ const JobDetails = () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:8081/api/jobs/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: "closed",
-          reasonClosed: closingReason,
-          closedAt: new Date().toISOString(),
-        }),
-      });
+      const res = await fetch(
+        import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            status: "closed",
+            reasonClosed: closingReason,
+            closedAt: new Date().toISOString(),
+          }),
+        },
+      );
 
       if (!res.ok) throw new Error("Failed to close job");
       const updated = await res.json();

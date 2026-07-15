@@ -31,9 +31,13 @@ const Register = () => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:8081/api/users/register", userData, {
-        headers: { "Content-Type": "application/json" },
-      });
+      await axios.post(
+        import.meta.env.VITE_API_BASE_URL + "/users/register",
+        userData,
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
       setLoading(false);
       alert("Registration successful!");
       navigate("/login");

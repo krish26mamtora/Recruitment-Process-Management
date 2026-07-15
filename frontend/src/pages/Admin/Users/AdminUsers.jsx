@@ -36,7 +36,7 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8081/api/users/all");
+      const res = await fetch(import.meta.env.VITE_API_BASE_URL + "/users/all");
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
@@ -81,11 +81,14 @@ const AdminUsers = () => {
       const payload = { ...newUser, roles: new Set(newUserRoles) };
       // Convert Set to Array for JSON
       payload.roles = Array.from(payload.roles);
-      const res = await fetch("http://localhost:8081/api/users/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        import.meta.env.VITE_API_BASE_URL + "/users/create",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
         throw new Error(msg || "Failed to create user");
@@ -122,12 +125,12 @@ const AdminUsers = () => {
     try {
       const roles = editedRoles[userId] ?? [];
       const res = await fetch(
-        `http://localhost:8081/api/users/${userId}/roles`,
+        import.meta.env.VITE_API_BASE_URL + `/users/${userId}/roles`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ roles }),
-        }
+        },
       );
       if (!res.ok) throw new Error(await res.text());
       toast.success("Roles updated");
@@ -174,11 +177,14 @@ const AdminUsers = () => {
 
         for (const user of usersToCreate) {
           try {
-            const res = await fetch("http://localhost:8081/api/users/create", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(user),
-            });
+            const res = await fetch(
+              import.meta.env.VITE_API_BASE_URL + "/users/create",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user),
+              },
+            );
 
             if (res.ok) {
               successfulCount++;
@@ -201,13 +207,13 @@ const AdminUsers = () => {
             .map((f) => `${f.email}`)
             .join(", ");
           toast.error(
-            `Failed to create ${failedEntries.length} users: ${errorDetails}.`
+            `Failed to create ${failedEntries.length} users: ${errorDetails}.`,
           );
         }
       } catch (err) {
         console.error("Error processing file:", err);
         toast.error(
-          err.message || "An error occurred while processing the file."
+          err.message || "An error occurred while processing the file.",
         );
       } finally {
         setUploading(false);
@@ -305,15 +311,15 @@ const AdminUsers = () => {
                   const formData = new FormData();
                   formData.append("file", resumeFile);
                   const res = await fetch(
-                    "http://localhost:8081/api/resume/parse",
+                    import.meta.env.VITE_API_BASE_URL + "/resume/parse",
                     {
                       method: "POST",
                       body: formData,
-                    }
+                    },
                   );
                   if (!res.ok) throw new Error(await res.text());
                   toast.success(
-                    "Resume parsed. Check backend logs for extracted data."
+                    "Resume parsed. Check backend logs for extracted data.",
                   );
                 } catch (err) {
                   console.error(err);

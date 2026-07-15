@@ -28,7 +28,7 @@ const JobForm = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`http://localhost:8081/api/jobs/${id}`)
+      fetch(import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`)
         .then((res) => {
           if (!res.ok) throw new Error("Job not found");
           return res.json();
@@ -38,7 +38,7 @@ const JobForm = () => {
             ...j,
             minExperienceYears: j.minExperienceYears ?? "",
             reasonClosed: j.reasonClosed ?? "",
-          })
+          }),
         )
         .catch((err) => {
           console.error(err);
@@ -51,10 +51,10 @@ const JobForm = () => {
 
   // 🔹 Fetch all skills from backend once
   useEffect(() => {
-    fetch("http://localhost:8081/api/skills")
-      .then(res => res.ok ? res.json() : [])
+    fetch(import.meta.env.VITE_API_BASE_URL + "/skills")
+      .then((res) => (res.ok ? res.json() : []))
       .then(setAllSkills)
-      .catch(err => {
+      .catch((err) => {
         console.error("Failed to fetch skills:", err);
         setAllSkills([]); // Ensure it's always an array
       });
@@ -66,7 +66,7 @@ const JobForm = () => {
     const filtered = allSkills.filter(
       (s) =>
         s.skill_name.toLowerCase().includes(query) &&
-        !form.skills.some((fs) => fs.skill_id === s.skill_id)
+        !form.skills.some((fs) => fs.skill_id === s.skill_id),
     );
     setFilteredSkills(filtered);
   }, [skillQuery, allSkills, form.skills]);
@@ -96,19 +96,25 @@ const JobForm = () => {
     try {
       let res;
       if (id) {
-        const response = await fetch(`http://localhost:8081/api/jobs/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+          import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
+        );
         if (!response.ok) throw new Error("Failed to update job");
         res = await response.json();
       } else {
-        const response = await fetch(`http://localhost:8081/api/jobs`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, createdBy: 1 }),
-        });
+        const response = await fetch(
+          import.meta.env.VITE_API_BASE_URL + `/jobs`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, createdBy: 1 }),
+          },
+        );
         if (!response.ok) throw new Error("Failed to create job");
         res = await response.json();
       }
@@ -182,7 +188,11 @@ const JobForm = () => {
               </div>
               <div>
                 <label>Status</label>
-                <select name="status" value={form.status} onChange={handleChange}>
+                <select
+                  name="status"
+                  value={form.status}
+                  onChange={handleChange}
+                >
                   <option value="open">Open</option>
                   <option value="on_hold">On Hold</option>
                   <option value="closed">Closed</option>

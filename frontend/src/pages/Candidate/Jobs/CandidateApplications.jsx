@@ -14,7 +14,10 @@ const CandidateApplications = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8081/api/job-applications/candidate/${uid}`);
+      const res = await fetch(
+        import.meta.env.VITE_API_BASE_URL +
+          `/job-applications/candidate/${uid}`,
+      );
       if (!res.ok) throw new Error("Failed to fetch your applications");
       const data = await res.json();
       setApplications(Array.isArray(data) ? data : []);
@@ -26,7 +29,9 @@ const CandidateApplications = () => {
     }
   };
 
-  useEffect(() => { loadApplications(); }, []);
+  useEffect(() => {
+    loadApplications();
+  }, []);
 
   return (
     <div className="candidate-job-list-page">
@@ -55,11 +60,18 @@ const CandidateApplications = () => {
                 <td>{idx + 1}</td>
                 <td>{app.jobTitle || `Job #${app.jobId}`}</td>
                 <td>{app.status || "—"}</td>
-                <td>{app.applicationDate ? new Date(app.applicationDate).toLocaleString() : "—"}</td>
+                <td>
+                  {app.applicationDate
+                    ? new Date(app.applicationDate).toLocaleString()
+                    : "—"}
+                </td>
                 <td>
                   {app.fileName ? (
                     <a
-                      href={`http://localhost:8081/api/job-applications/${app.id}/resume`}
+                      href={
+                        import.meta.env.VITE_API_BASE_URL +
+                        `/job-applications/${app.id}/resume`
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="resume-link"

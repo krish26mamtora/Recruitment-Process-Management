@@ -18,7 +18,8 @@ const ScheduledInterviews = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        "http://localhost:8081/api/job-applications/scheduled-interviews",
+        import.meta.env.VITE_API_BASE_URL +
+          "/job-applications/scheduled-interviews",
       );
       if (!res.ok) throw new Error("Failed to fetch interviews");
       const data = await res.json();
@@ -69,7 +70,8 @@ const ScheduledInterviews = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:8081/api/job-applications/${selectedInterview.applicationId}/feedback`,
+        import.meta.env.VITE_API_BASE_URL +
+          `/job-applications/${selectedInterview.applicationId}/feedback`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

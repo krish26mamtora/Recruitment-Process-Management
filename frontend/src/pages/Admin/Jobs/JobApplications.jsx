@@ -26,8 +26,8 @@ const JobApplications = ({ jobId }) => {
     setLoading(true);
     try {
       const url = jobId
-        ? `http://localhost:8081/api/job-applications/job/${jobId}`
-        : `http://localhost:8081/api/job-applications`;
+        ? import.meta.env.VITE_API_BASE_URL + `/job-applications/job/${jobId}`
+        : import.meta.env.VITE_API_BASE_URL + `/job-applications`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch job applications");
       const data = await res.json();
@@ -52,7 +52,9 @@ const JobApplications = ({ jobId }) => {
         return;
       }
       try {
-        const res = await fetch(`http://localhost:8081/api/jobs/${jobId}`);
+        const res = await fetch(
+          import.meta.env.VITE_API_BASE_URL + `/jobs/${jobId}`,
+        );
         if (!res.ok) return;
         const job = await res.json();
         setJobTitle(job?.title || "");
@@ -176,7 +178,10 @@ const JobApplications = ({ jobId }) => {
                     <td>
                       {app.fileName ? (
                         <a
-                          href={`http://localhost:8081/api/job-applications/${app.id}/resume`}
+                          href={
+                            import.meta.env.VITE_API_BASE_URL +
+                            `/job-applications/${app.id}/resume`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="resume-link"
@@ -357,7 +362,8 @@ const JobApplications = ({ jobId }) => {
                     };
                     try {
                       const res = await fetch(
-                        `http://localhost:8081/api/job-applications/${selectedApp.id}/schedule-interview`,
+                        import.meta.env.VITE_API_BASE_URL +
+                          `/job-applications/${selectedApp.id}/schedule-interview`,
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
@@ -439,7 +445,8 @@ const JobApplications = ({ jobId }) => {
                   onClick={async () => {
                     try {
                       const res = await fetch(
-                        `http://localhost:8081/api/job-applications/${selectedApp.id}/status`,
+                        import.meta.env.VITE_API_BASE_URL +
+                          `/job-applications/${selectedApp.id}/status`,
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },

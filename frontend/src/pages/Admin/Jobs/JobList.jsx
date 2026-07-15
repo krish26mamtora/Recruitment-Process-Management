@@ -14,13 +14,15 @@ const JobList = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8081/api/jobs`);
+      const res = await fetch(import.meta.env.VITE_API_BASE_URL + `/jobs`);
       if (!res.ok) throw new Error("Failed to fetch jobs");
 
       const data = await res.json();
       setJobs(data || []);
 
-      const appsRes = await fetch(`http://localhost:8081/api/job-applications`);
+      const appsRes = await fetch(
+        import.meta.env.VITE_API_BASE_URL + `/job-applications`,
+      );
       if (appsRes.ok) {
         const apps = await appsRes.json();
         const counts = {};
@@ -48,9 +50,12 @@ const JobList = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete job? This action cannot be undone.")) return;
     try {
-      const res = await fetch(`http://localhost:8081/api/jobs/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        import.meta.env.VITE_API_BASE_URL + `/jobs/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!res.ok) throw new Error("Delete failed");
 
       alert("Job deleted");

@@ -14,11 +14,14 @@ const Login = () => {
     console.log("Email:", email);
     console.log("Password:", password);
     try {
-      const response = await fetch("http://localhost:8081/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        import.meta.env.VITE_API_BASE_URL + "/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        },
+      );
 
       const data = await response.json();
       console.log(data);
@@ -41,7 +44,9 @@ const Login = () => {
           navigate("/dashboard");
         }
       } else {
-        toast.error(data.message || "Login failed. Please check your credentials.");
+        toast.error(
+          data.message || "Login failed. Please check your credentials.",
+        );
       }
     } catch (error) {
       console.error("Error during login:", error);
