@@ -23,6 +23,11 @@ public class EmailConfigValidator {
         log.info("Mail Host: {}", mailHost);
         log.info("Mail Username: {}", mailUsername);
 
+        if (mailHost == null || mailHost.isEmpty()) {
+            log.warn("⚠️  Email host is not configured. Email notifications will fail.");
+            log.warn("⚠️  Please configure SPRING_MAIL_HOST or spring.mail.host in application.properties");
+        }
+
         if (mailUsername == null || mailUsername.isEmpty()) {
             log.warn("⚠️  Email username is not configured. Email notifications will fail.");
             log.warn("⚠️  Please configure spring.mail.username and spring.mail.password in application.properties");
