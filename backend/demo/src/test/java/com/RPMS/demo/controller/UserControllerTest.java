@@ -80,7 +80,7 @@ public class UserControllerTest {
         request.setUserId(1L);
         request.setRoles(Set.of("ROLE_ADMIN"));
 
-        Mockito.doNothing().when(userService).setUserRoles(anyLong(), anySet());
+        Mockito.when(userService.setUserRoles(anyLong(), anySet())).thenReturn(sampleUser);
 
         mockMvc.perform(post("/api/users/role")
                 .contentType(MediaType.APPLICATION_JSON)

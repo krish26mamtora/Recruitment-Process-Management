@@ -21,7 +21,7 @@ public class UserDtoTest {
         userDto.setUsername("testuser");
         userDto.setEmail("test@example.com");
         userDto.setFullName("Test User");
-        userDto.setStatus(User.Status.ACTIVE);
+        userDto.setStatus(User.Status.active);
         userDto.setCreatedAt(LocalDateTime.now());
         userDto.setResumeFileName("resume.pdf");
     }
@@ -32,7 +32,7 @@ public class UserDtoTest {
         assertEquals("testuser", userDto.getUsername());
         assertEquals("test@example.com", userDto.getEmail());
         assertEquals("Test User", userDto.getFullName());
-        assertEquals(User.Status.ACTIVE, userDto.getStatus());
+        assertEquals(User.Status.active, userDto.getStatus());
         assertNotNull(userDto.getCreatedAt());
         assertEquals("resume.pdf", userDto.getResumeFileName());
     }
@@ -43,14 +43,14 @@ public class UserDtoTest {
         userDto.setUsername("newuser");
         userDto.setEmail("new@example.com");
         userDto.setFullName("New User");
-        userDto.setStatus(User.Status.INACTIVE);
+        userDto.setStatus(User.Status.inactive);
         userDto.setResumeFileName("new_resume.pdf");
 
         assertEquals(2L, userDto.getUserId());
         assertEquals("newuser", userDto.getUsername());
         assertEquals("new@example.com", userDto.getEmail());
         assertEquals("New User", userDto.getFullName());
-        assertEquals(User.Status.INACTIVE, userDto.getStatus());
+        assertEquals(User.Status.inactive, userDto.getStatus());
         assertEquals("new_resume.pdf", userDto.getResumeFileName());
     }
 

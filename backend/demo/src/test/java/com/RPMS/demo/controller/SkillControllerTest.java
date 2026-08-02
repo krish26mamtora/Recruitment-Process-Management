@@ -47,8 +47,8 @@ public class SkillControllerTest {
 
         mockMvc.perform(get("/api/skills"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].skillId").value(1))
-                .andExpect(jsonPath("$[0].skillName").value("Java"));
+                .andExpect(jsonPath("$[0].skill_id").value(1))
+                .andExpect(jsonPath("$[0].skill_name").value("Java"));
    }
 
     @Test
@@ -59,8 +59,8 @@ public class SkillControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(sampleSkill)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.skillId").value(1))
-                .andExpect(jsonPath("$.skillName").value("Java"));
+                .andExpect(jsonPath("$.skill_id").value(1))
+                .andExpect(jsonPath("$.skill_name").value("Java"));
     }
 
     @Test
@@ -69,8 +69,8 @@ public class SkillControllerTest {
 
         mockMvc.perform(get("/api/skills/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.skillId").value(1))
-                .andExpect(jsonPath("$.skillName").value("Java"));
+                .andExpect(jsonPath("$.skill_id").value(1))
+                .andExpect(jsonPath("$.skill_name").value("Java"));
     }
 
     @Test

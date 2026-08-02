@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,9 +43,7 @@ public class AuthControllerTest {
         loginRequest.setEmail("test@example.com");
         loginRequest.setPassword("password");
 
-        loginResponse = new LoginResponse();
-        loginResponse.setToken("test-token");
-        loginResponse.setEmail("test@example.com");
+        loginResponse = new LoginResponse(true, "Login successful", "Test User", Set.of("ROLE_USER"), 1L, "test@example.com");
     }
 
     @Test
@@ -54,7 +54,7 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("test-token"))
+                .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 }

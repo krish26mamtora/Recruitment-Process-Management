@@ -1,6 +1,7 @@
 package com.RPMS.demo.controller;
 
 import com.RPMS.demo.dto.InterviewFeedbackDTO;
+import com.RPMS.demo.model.InterviewFeedback;
 import com.RPMS.demo.model.JobApplication;
 import com.RPMS.demo.service.JobApplicationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,8 +78,8 @@ public class JobApplicationControllerTest {
     @Test
     void testMapCandidateToJob() throws Exception {
         JobApplicationController.MapRequest request = new JobApplicationController.MapRequest();
-        request.setJobId(1);
-        request.setCandidateId(1L);
+        request.jobId = 1;
+        request.candidateId = 1L;
 
         Mockito.when(jobApplicationService.mapCandidateToJob(1, 1L)).thenReturn(sampleApplication);
 
@@ -92,11 +93,11 @@ public class JobApplicationControllerTest {
     @Test
     void testScheduleInterview() throws Exception {
         JobApplicationController.ScheduleInterviewRequest request = new JobApplicationController.ScheduleInterviewRequest();
-        request.setRound("Technical Round");
-        request.setScheduledAt("2024-01-15T10:00:00");
-        request.setMeetLink("https://meet.google.com/abc-defg-hij");
-        request.setMessage("Please join on time");
-        request.setInterviewerEmails(Arrays.asList("interviewer@example.com"));
+        request.round = "Technical Round";
+        request.scheduledAt = "2024-01-15T10:00:00";
+        request.meetLink = "https://meet.google.com/abc-defg-hij";
+        request.message = "Please join on time";
+        request.interviewerEmails = Arrays.asList("interviewer@example.com");
 
         Mockito.when(jobApplicationService.scheduleInterview(anyLong(), any(), any(), any(), any(), any()))
                 .thenReturn(sampleApplication);
@@ -111,8 +112,8 @@ public class JobApplicationControllerTest {
     @Test
     void testUpdateStatus() throws Exception {
         JobApplicationController.UpdateStatusRequest request = new JobApplicationController.UpdateStatusRequest();
-        request.setStatus("SELECTED");
-        request.setRemarks("Great candidate");
+        request.status = "SELECTED";
+        request.remarks = "Great candidate";
 
         Mockito.when(jobApplicationService.updateApplicationStatus(anyLong(), any(), any()))
                 .thenReturn(sampleApplication);
@@ -127,17 +128,24 @@ public class JobApplicationControllerTest {
     @Test
     void testAddFeedback() throws Exception {
         JobApplicationController.FeedbackRequest request = new JobApplicationController.FeedbackRequest();
-        request.setRound("Technical Round");
-        request.setInterviewerName("John Smith");
-        request.setComments("Good skills");
-        request.setRatingsJson("{\"technical\":8}");
+        request.round = "Technical Round";
+        request.interviewerName = "John Smith";
+        request.comments = "Good skills";
+        request.ratingsJson = "{\"technical\":8}";
 
-        InterviewFeedbackDTO feedbackDTO = new InterviewFeedbackDTO();
-        feedbackDTO.setId(1L);
-        feedbackDTO.setRound("Technical Round");
+        JobApplication feedbackApplication = new JobApplication();
+        feedbackApplication.setId(1);
+
+        InterviewFeedback feedback = new InterviewFeedback();
+        feedback.setId(1L);
+        feedback.setJobApplication(feedbackApplication);
+        feedback.setRound("Technical Round");
+        feedback.setInterviewerName("John Smith");
+        feedback.setComments("Good skills");
+        feedback.setRatingsJson("{\"technical\":8}");
 
         Mockito.when(jobApplicationService.addFeedback(any(), any(), any(), any(), any()))
-                .thenReturn(new com.RPMS.demo.model.InterviewFeedback());
+                .thenReturn(feedback);
 
         mockMvc.perform(post("/api/job-applications/1/feedback")
                 .contentType(MediaType.APPLICATION_JSON)

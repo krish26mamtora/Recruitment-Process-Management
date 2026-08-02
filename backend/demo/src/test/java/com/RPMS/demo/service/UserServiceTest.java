@@ -119,6 +119,7 @@ public class UserServiceTest {
 
     @Test
     void testLoginUser_Success() {
+        user.setPasswordHash(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("password"));
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
 
         LoginResponse response = userService.loginUser("test@example.com", "password");

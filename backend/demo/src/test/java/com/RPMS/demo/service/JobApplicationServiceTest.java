@@ -132,7 +132,7 @@ public class JobApplicationServiceTest {
 
         assertNotNull(mappedApplication);
         verify(jobApplicationRepository, times(1)).save(any(JobApplication.class));
-        verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(Object.class));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class JobApplicationServiceTest {
 
         assertNotNull(scheduledApplication);
         verify(jobApplicationRepository, times(1)).save(any(JobApplication.class));
-        verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(Object.class));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class JobApplicationServiceTest {
 
         assertNotNull(updatedApplication);
         verify(jobApplicationRepository, times(1)).save(any(JobApplication.class));
-        verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(Object.class));
     }
 
     @Test

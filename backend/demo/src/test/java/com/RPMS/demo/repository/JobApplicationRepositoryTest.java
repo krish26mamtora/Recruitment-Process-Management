@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class JobApplicationRepositoryTest {
 
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     private JobApplication jobApplication;
 
@@ -40,24 +44,30 @@ public class JobApplicationRepositoryTest {
 
     @Test
     void testFindByJobIdFk() {
-        jobApplication.setJobIdFk(1);
+        Job job = new Job();
+        job.setTitle("Software Engineer");
+        job = entityManager.persistFlushFind(job);
+        jobApplication.setJob(job);
         jobApplicationRepository.save(jobApplication);
 
-        List<JobApplication> foundApplications = jobApplicationRepository.findByJobIdFk(1);
+        List<JobApplication> foundApplications = jobApplicationRepository.findByJobIdFk(job.getJobId());
 
         assertNotNull(foundApplications);
         assertFalse(foundApplications.isEmpty());
-        assertEquals(1, foundApplications.get(0).getJobIdFk());
+        assertEquals(job.getJobId(), foundApplications.get(0).getJobIdFk());
     }
 
     @Test
     void testFindByCandidate_UserId() {
         User user = new User();
-        user.setUserId(1L);
+        user.setUsername("john.doe");
+        user.setEmail("john@example.com");
+        user.setPasswordHash("password");
+        user = entityManager.persistFlushFind(user);
         jobApplication.setCandidate(user);
         jobApplicationRepository.save(jobApplication);
 
-        List<JobApplication> foundApplications = jobApplicationRepository.findByCandidate_UserId(1L);
+        List<JobApplication> foundApplications = jobApplicationRepository.findByCandidate_UserId(user.getUserId());
 
         assertNotNull(foundApplications);
         assertFalse(foundApplications.isEmpty());
