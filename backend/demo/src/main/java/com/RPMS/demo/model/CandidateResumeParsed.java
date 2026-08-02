@@ -25,7 +25,7 @@ public class CandidateResumeParsed {
     private JobApplication jobApplication;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "extracted_skills", columnDefinition = "TEXT[]")
+    @Column(name = "extracted_skills")
     private List<String> extractedSkills;
 
     @Column(name = "extracted_experience_years")
